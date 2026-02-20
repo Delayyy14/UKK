@@ -47,6 +47,7 @@ interface Peminjaman {
   tanggal_kembali: string;
   status: string;
   alasan: string;
+  created_at?: string;
 }
 
 export default function PeminjamanPage() {
@@ -171,10 +172,12 @@ export default function PeminjamanPage() {
             body: JSON.stringify(payload),
         });
 
+        const data = await res.json();
+
         if (res.ok) {
             fetchPeminjaman();
         } else {
-            alert('Gagal memperbarui status');
+            alert(data.error || 'Gagal memperbarui status');
         }
     } catch (error) {
         console.error(error);
@@ -301,12 +304,22 @@ export default function PeminjamanPage() {
                     </span>
                     <span className="font-medium">{formatDate(item.tanggal_pinjam)}</span>
                 </div>
-                 <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-2">
                         <Calendar size={14} /> Kembali
                     </span>
                     <span className="font-medium">{formatDate(item.tanggal_kembali)}</span>
                 </div>
+                {item.status === 'pending' && (
+                    <div className="flex items-center justify-between pt-2 border-t">
+                        <span className="text-muted-foreground text-xs">
+                           Stok: {item.jumlah_tersedia ?? '-'}
+                        </span>
+                        <span className="text-xs font-medium text-orange-600">
+                           Antrian: {formatDate(item.created_at || '')}
+                        </span>
+                    </div>
+                )}
                 {item.alasan && (
                     <div className="bg-muted/50 p-2 rounded text-xs italic">
                         "{item.alasan}"

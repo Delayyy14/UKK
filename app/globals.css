@@ -110,3 +110,7 @@
     margin: 16mm;
   }
 }
+
+html {
+  scroll-behavior: smooth;
+}

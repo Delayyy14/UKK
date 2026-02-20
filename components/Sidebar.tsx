@@ -14,7 +14,8 @@ import {
   Package,
   PlusCircle,
   Settings,
-  Menu
+  Menu,
+  Mail
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export default function Sidebar({ userRole }: SidebarProps) {
 
   const adminMenu = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Pesan', path: '/dashboard/messages', icon: Mail },
     { name: 'User', path: '/admin/users', icon: Users },
     { name: 'Alat', path: '/admin/alat', icon: Package },
     { name: 'Kategori', path: '/admin/kategori', icon: FolderOpen },

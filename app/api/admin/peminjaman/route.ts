@@ -9,7 +9,9 @@ export async function GET(request: NextRequest) {
       FROM peminjaman p 
       LEFT JOIN users u ON p.user_id = u.id 
       LEFT JOIN alat a ON p.alat_id = a.id 
-      ORDER BY p.id DESC
+      ORDER BY 
+        CASE WHEN p.status = 'pending' THEN 1 ELSE 2 END ASC,
+        p.created_at ASC
     `);
     return NextResponse.json(result.rows);
   } catch (error) {

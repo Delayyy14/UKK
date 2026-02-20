@@ -34,6 +34,19 @@ export async function PUT(
 
     // If status changed to 'disetujui', decrease available stock
     if (status === 'disetujui' && oldData.status !== 'disetujui') {
+      // Check if enough stock is available
+      const alatCheck = await pool.query('SELECT jumlah_tersedia FROM alat WHERE id = $1', [alat_id]);
+      if (alatCheck.rows.length === 0) {
+        return NextResponse.json({ error: 'Alat tidak ditemukan' }, { status: 404 });
+      }
+
+      const currentStock = alatCheck.rows[0].jumlah_tersedia;
+      if (currentStock < jumlah) {
+        return NextResponse.json({
+          error: `Stok tidak mencukupi. Tersedia: ${currentStock}, Diminta: ${jumlah}`
+        }, { status: 400 });
+      }
+
       await pool.query(
         `UPDATE alat 
          SET jumlah_tersedia = jumlah_tersedia - $1

@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { LogOut, User, Settings, ChevronDown } from 'lucide-react';
+import Link from 'next/link';
+import { LogOut, User, Settings, ChevronDown, Home } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -64,8 +65,16 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
           </p>
         </div>
 
-        {/* Right Side - Profile Dropdown */}
+        {/* Right Side - Actions & Profile */}
         <div className="flex items-center gap-4">
+             {/* Back to Home Button */}
+            <Button variant="outline" size="sm" asChild className="hidden md:flex gap-2">
+                <Link href="/">
+                    <Home className="h-4 w-4" />
+                    Kembali ke Beranda
+                </Link>
+            </Button>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -93,6 +102,14 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                {/* Mobile Back to Home - Only visible inside dropdown on small screens if we wanted, but let's keep it consistent */}
+                <DropdownMenuItem asChild className="md:hidden">
+                    <Link href="/">
+                        <Home className="mr-2 h-4 w-4" />
+                        <span>Kembali ke Beranda</span>
+                    </Link>
+                </DropdownMenuItem>
+                
                 <DropdownMenuItem onClick={() => router.push('/settings')}>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Pengaturan</span>
