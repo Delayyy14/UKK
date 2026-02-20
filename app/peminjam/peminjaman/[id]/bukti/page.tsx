@@ -6,6 +6,7 @@ import { Printer } from 'lucide-react';
 
 interface PeminjamanDetail {
   id: number;
+  user_id: number;
   user_nama: string;
   user_username: string;
   user_email: string;
