@@ -1,11 +1,15 @@
 import { Pool } from 'pg';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'peminjaman_alat',
-  password: 'postgres',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  user: process.env.DATABASE_URL ? undefined : (process.env.DB_USER || 'postgres'),
+  host: process.env.DATABASE_URL ? undefined : (process.env.DB_HOST || 'localhost'),
+  database: process.env.DATABASE_URL ? undefined : (process.env.DB_NAME || 'peminjaman_alat'),
+  password: process.env.DATABASE_URL ? undefined : (process.env.DB_PASSWORD || 'postgres'),
+  port: process.env.DATABASE_URL ? undefined : parseInt(process.env.DB_PORT || '5432'),
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
 
 // Test connection
