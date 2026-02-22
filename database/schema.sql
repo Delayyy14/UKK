@@ -76,6 +76,17 @@ CREATE TABLE IF NOT EXISTS activity_log (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Contact Messages table
+CREATE TABLE IF NOT EXISTS contact_messages (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    subject VARCHAR(255),
+    message TEXT NOT NULL,
+    status VARCHAR(20) DEFAULT 'unread' CHECK (status IN ('unread', 'read', 'replied')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_alat_kategori ON alat(kategori_id);
@@ -85,6 +96,7 @@ CREATE INDEX IF NOT EXISTS idx_peminjaman_alat ON peminjaman(alat_id);
 CREATE INDEX IF NOT EXISTS idx_peminjaman_status ON peminjaman(status);
 CREATE INDEX IF NOT EXISTS idx_activity_log_user ON activity_log(user_id);
 CREATE INDEX IF NOT EXISTS idx_activity_log_created ON activity_log(created_at);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_created ON contact_messages(created_at);
 
 -- Insert default admin user (password: admin123)
 -- Note: Run scripts/setup-default-users.js to set proper password hashes
