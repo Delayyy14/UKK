@@ -4,6 +4,7 @@ import Layout from '@/components/Layout';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { Users, Pencil, Trash2, Plus, Search, Edit } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 import {
   Table,
   TableBody,
@@ -91,11 +92,12 @@ export default function UsersPage() {
         setEditingUser(null);
         setFormData({ username: '', password: '', nama: '', email: '', role: 'peminjam' });
         fetchUsers();
+        toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
       } else {
-        alert('Gagal menyimpan user');
+        toast({ title: 'Gagal', description: 'Gagal menyimpan user', variant: 'destructive' });
       }
     } catch (error) {
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 
@@ -118,11 +120,12 @@ export default function UsersPage() {
       const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
       if (res.ok) {
         fetchUsers();
+        toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
       } else {
-        alert('Gagal menghapus user');
+        toast({ title: 'Gagal', description: 'Gagal menghapus user', variant: 'destructive' });
       }
     } catch (error) {
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 

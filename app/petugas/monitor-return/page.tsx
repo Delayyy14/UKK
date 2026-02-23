@@ -4,6 +4,7 @@ import Layout from '@/components/Layout';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { Eye } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 import Pagination from '@/components/Pagination';
 
 interface Peminjaman {
@@ -138,16 +139,16 @@ export default function MonitorReturnPage() {
 
       const data = await res.json();
       if (res.ok) {
-        alert('Pengembalian berhasil dikonfirmasi');
+        toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
         setShowModal(false);
         setSelectedPeminjaman(null);
         fetchData();
       } else {
-        alert(data.error || 'Gagal mengkonfirmasi pengembalian');
+        toast({ title: 'Gagal', description: data.error || 'Gagal mengkonfirmasi pengembalian', variant: 'destructive' });
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 

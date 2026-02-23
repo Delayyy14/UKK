@@ -47,14 +47,28 @@ export default function TestimonialSection() {
 
       <div className="text-center mb-16 relative z-10">
         <h1 className="text-4xl md:text-5xl font-bold text-blue-600 tracking-tight mb-4">TESTIMONIALS</h1>
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">What Our Clients Say About Us</h2>
+        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
+          What Our Clients Say{" "}
+          <span className="relative inline-block px-1">
+            <span className="relative z-10">About Us</span>
+            {/* Brush underline */}
+            <img
+              src="/images/svg/effect-water-brush.png"
+              alt="brush"
+              className="absolute -bottom-10 left-0 w-full h-12 -z-10 opacity-70 scale-110"
+            />
+          </span>
+        </h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto relative z-10">
         {testimonials.map((item, i) => (
-          <div key={i} className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300">
+          <div 
+            key={i} 
+            className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300"
+          >
             <div>
-                <p className="text-gray-600 leading-relaxed mb-6">
+                <p className="text-gray-600 leading-relaxed mb-6 italic">
                 "{item.content}"
                 </p>
             </div>

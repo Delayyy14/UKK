@@ -4,6 +4,7 @@ import Layout from '@/components/Layout';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { RotateCcw } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface Pengembalian {
   id: number;
@@ -91,11 +92,12 @@ export default function PengembalianPage() {
           denda: 0,
         });
         fetchPengembalian();
+        toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
       } else {
-        alert('Gagal menyimpan pengembalian');
+        toast({ title: 'Gagal', description: 'Gagal menyimpan pengembalian', variant: 'destructive' });
       }
     } catch (error) {
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 
@@ -118,11 +120,12 @@ export default function PengembalianPage() {
       const res = await fetch(`/api/admin/pengembalian/${id}`, { method: 'DELETE' });
       if (res.ok) {
         fetchPengembalian();
+        toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
       } else {
-        alert('Gagal menghapus pengembalian');
+        toast({ title: 'Gagal', description: 'Gagal menghapus pengembalian', variant: 'destructive' });
       }
     } catch (error) {
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 

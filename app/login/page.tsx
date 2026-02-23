@@ -4,6 +4,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { User, Lock, ArrowRight, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,12 +35,14 @@ export default function LoginPage() {
 
       if (res.ok) {
         localStorage.setItem('user', JSON.stringify(data.user));
+        toast({ title: 'Berhasil', description: 'Selamat datang! Login berhasil.', variant: 'success' });
         router.push('/dashboard');
       } else {
         setError(data.error || 'Login gagal');
       }
     } catch (err) {
       setError('Terjadi kesalahan saat login');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     } finally {
       setLoading(false);
     }

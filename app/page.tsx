@@ -84,15 +84,17 @@ export default async function LandingPage() {
           </div>
 
           {/* Right Column: Image - HIDDEN ON MOBILE */}
-          <div className="relative w-full aspect-square lg:aspect-auto lg:h-[600px] hidden lg:flex items-center justify-center animate-in slide-in-from-right-8 duration-1000 delay-200 z-10">
-             {/* Decorative blob behind image */}
-             <div className="absolute inset-0 bg-gradient-to-tr from-blue-200/40 to-purple-200/40 rounded-full blur-[100px] transform scale-110 animate-pulse" />
-             <img 
-               src="/images/svg/svg-1.1.png" 
-               alt="Hero Illustration" 
-               className="w-full h-full object-contain drop-shadow-2xl relative z-20 hover:scale-105 transition-transform duration-700 pointer-events-none md:block hidden"
-             />
-          </div>
+          <div className="relative w-full rounded-3xl overflow-hidden aspect-square lg:aspect-auto lg:h-[600px] hidden lg:flex items-center justify-center animate-in slide-in-from-right-8 duration-1000 delay-200 z-10">
+
+  {/* Decorative blob */}
+  <div className="absolute inset-0 bg-gradient-to-tr from-blue-200/40 to-purple-200/40 blur-[100px] transform scale-110 animate-pulse" />
+
+  <img 
+    src="/images/person/hiking-image.jpeg" 
+    alt="Hiking Image" 
+    className="w-full h-full object-cover drop-shadow-2xl relative z-20 hover:scale-105 transition-transform duration-700"
+  />
+</div>
         </div>
       </section>
 

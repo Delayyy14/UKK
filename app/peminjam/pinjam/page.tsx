@@ -5,6 +5,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState, Suspense, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PlusCircle, Package, Receipt, Tag } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface Alat {
   id: number;
@@ -127,15 +128,15 @@ function PinjamPageContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (selectedItems.length === 0) return alert('Pilih minimal satu alat');
-    if (!globalFormData.tanggal_pinjam || !globalFormData.tanggal_kembali) return alert('Pilih tanggal pinjam dan kembali');
-    if (durasiHari <= 0) return alert('Tanggal kembali harus setelah tanggal pinjam');
+    if (selectedItems.length === 0) return toast({ title: 'Perhatian', description: 'Pilih minimal satu alat', variant: 'destructive' });
+    if (!globalFormData.tanggal_pinjam || !globalFormData.tanggal_kembali) return toast({ title: 'Perhatian', description: 'Pilih tanggal pinjam dan kembali', variant: 'destructive' });
+    if (durasiHari <= 0) return toast({ title: 'Perhatian', description: 'Tanggal kembali harus setelah tanggal pinjam', variant: 'destructive' });
 
     setLoading(true);
 
     try {
       const userStr = localStorage.getItem('user');
-      if (!userStr) return alert('Anda harus login');
+      if (!userStr) return toast({ title: 'Gagal', description: 'Anda harus login', variant: 'destructive' });
       const user = JSON.parse(userStr);
 
       const promises = selectedItems.map(item => {
@@ -161,15 +162,15 @@ function PinjamPageContent() {
       const allOk = results.every(res => res.ok);
 
       if (allOk) {
-        alert('Semua peminjaman berhasil diajukan');
+        toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
         window.location.href = '/dashboard';
       } else {
-        alert('Beberapa atau semua pengajuan gagal. Silakan cek riwayat Anda.');
+        toast({ title: 'Info', description: 'Beberapa atau semua pengajuan gagal. Silakan cek riwayat Anda.', variant: 'destructive' });
         window.location.href = '/dashboard';
       }
     } catch (err) {
       console.error(err);
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     } finally {
       setLoading(false);
     }

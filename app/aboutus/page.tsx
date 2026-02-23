@@ -18,10 +18,17 @@ export default function AboutUsPage() {
       />
 
       <div className="container mx-auto py-12 px-6 max-w-4xl">
-        <p className='text-left text-black text-2xl font-bold'>
-          Tentang Kami
-        </p>
-        <p className='text-left text-muted-foreground mb-8'>
+        <div className="relative inline-block mb-4">
+          <p className='text-left text-black text-4xl font-bold relative z-10 italic'>
+            Tentang Kami
+          </p>
+          <img
+            src="/images/svg/effect-water-brush.png"
+            alt="brush"
+            className="absolute -bottom-4 -left-1 w-[120%] h-12 -z-10 opacity-60"
+          />
+        </div>
+        <p className='text-left text-muted-foreground mb-8 italic'>
           Informasi tentang aplikasi Pinjamin.
         </p>
 

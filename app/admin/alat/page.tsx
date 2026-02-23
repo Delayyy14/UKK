@@ -4,6 +4,7 @@ import Layout from '@/components/Layout';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { Wrench, Plus, Search, Edit, Trash2 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 import {
   Table,
   TableBody,
@@ -156,12 +157,13 @@ export default function AlatPage() {
         setSelectedFile(null);
         setPreviewImage(null);
         fetchAlat();
+        toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
       } else {
         const errorData = await res.json();
-        alert(errorData.error || 'Gagal menyimpan alat');
+        toast({ title: 'Gagal', description: errorData.error || 'Gagal menyimpan alat', variant: 'destructive' });
       }
     } catch (error) {
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     } finally {
       setUploading(false);
     }
@@ -202,11 +204,12 @@ export default function AlatPage() {
       const res = await fetch(`/api/admin/alat/${id}`, { method: 'DELETE' });
       if (res.ok) {
         fetchAlat();
+        toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
       } else {
-        alert('Gagal menghapus alat');
+        toast({ title: 'Gagal', description: 'Gagal menghapus alat', variant: 'destructive' });
       }
     } catch (error) {
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 

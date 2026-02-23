@@ -4,6 +4,7 @@ import Layout from '@/components/Layout';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { RotateCcw } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface Peminjaman {
   id: number;
@@ -71,15 +72,15 @@ export default function KembalikanPage() {
 
       const data = await res.json();
       if (res.ok) {
-        alert('Pengembalian berhasil');
+        toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
         setShowModal(false);
         setSelectedPeminjaman(null);
         fetchPeminjaman();
       } else {
-        alert(data.error || 'Gagal melakukan pengembalian');
+        toast({ title: 'Gagal', description: data.error || 'Gagal melakukan pengembalian', variant: 'destructive' });
       }
     } catch (error) {
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 

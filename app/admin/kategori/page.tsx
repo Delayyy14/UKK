@@ -4,6 +4,7 @@ import Layout from '@/components/Layout';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { FolderOpen, Pencil, Trash, Plus, Search } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 import Pagination from '@/components/Pagination';
 import {
   Table,
@@ -80,11 +81,12 @@ export default function KategoriPage() {
         setEditingKategori(null);
         setFormData({ nama: '', deskripsi: '' });
         fetchKategori();
+        toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
       } else {
-        alert('Gagal menyimpan kategori');
+        toast({ title: 'Gagal', description: 'Gagal menyimpan kategori', variant: 'destructive' });
       }
     } catch (error) {
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 
@@ -104,11 +106,12 @@ export default function KategoriPage() {
       const res = await fetch(`/api/admin/kategori/${id}`, { method: 'DELETE' });
       if (res.ok) {
         fetchKategori();
+        toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
       } else {
-        alert('Gagal menghapus kategori');
+        toast({ title: 'Gagal', description: 'Gagal menghapus kategori', variant: 'destructive' });
       }
     } catch (error) {
-      alert('Terjadi kesalahan');
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 
