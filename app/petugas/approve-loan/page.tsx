@@ -321,12 +321,12 @@ export default function ApproveLoanPage() {
             <Package size={48} />
           </div>
           <h3 className="text-2xl font-black text-gray-800 mb-2">
-            {pendingPeminjaman.length === 0 
+            {peminjaman.length === 0 
               ? 'Yippee! Tidak ada antrian' 
               : 'Pencarian tidak ditemukan'}
           </h3>
           <p className="text-gray-400 font-medium">
-            {pendingPeminjaman.length === 0 
+            {peminjaman.length === 0 
               ? 'Semua permintaan peminjaman telah Anda selesaikan.' 
               : 'Pastikan kata kunci pencarian Anda sudah benar.'}
           </p>
