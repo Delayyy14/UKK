@@ -5,6 +5,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { FolderOpen, Pencil, Trash, Plus, Search } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import ImportExcel from '@/components/ImportExcel';
 import Pagination from '@/components/Pagination';
 import {
   Table,
@@ -150,14 +151,26 @@ export default function KategoriPage() {
             />
         </div>
 
-        {/* Button */}
-        <Button onClick={() => {
-            setEditingKategori(null);
-            setFormData({ nama: '', deskripsi: '' });
-            setShowDialog(true);
-        }}>
-           <Plus className="mr-2 h-4 w-4" /> Tambah Kategori
-        </Button>
+        {/* Buttons */}
+        <div className="flex gap-2 w-full sm:w-auto">
+            <ImportExcel 
+                title="Kategori"
+                apiUrl="/api/admin/kategori/bulk"
+                onSuccess={fetchKategori}
+                fileName="kategori"
+                templateData={[
+                    { nama: 'Elektronik', deskripsi: 'Alat-alat elektronik dan gadget' },
+                    { nama: 'Pertukangan', deskripsi: 'Alat-alat pertukangan dan bengkel' }
+                ]}
+            />
+            <Button onClick={() => {
+                setEditingKategori(null);
+                setFormData({ nama: '', deskripsi: '' });
+                setShowDialog(true);
+            }}>
+               <Plus className="mr-2 h-4 w-4" /> Tambah Kategori
+            </Button>
+        </div>
       </div>
 
       <div className="rounded-md border bg-card">

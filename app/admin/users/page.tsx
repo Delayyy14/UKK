@@ -5,6 +5,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { Users, Pencil, Trash2, Plus, Search, Edit } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import ImportExcel from '@/components/ImportExcel';
 import {
   Table,
   TableBody,
@@ -166,14 +167,26 @@ export default function UsersPage() {
             />
         </div>
 
-        {/* Button */}
-        <Button onClick={() => {
-            setEditingUser(null);
-            setFormData({ username: '', password: '', nama: '', email: '', role: 'peminjam' });
-            setShowDialog(true);
-        }}>
-            <Plus className="mr-2 h-4 w-4" /> Tambah User
-        </Button>
+        {/* Buttons */}
+        <div className="flex gap-2 w-full sm:w-auto">
+            <ImportExcel 
+                title="Users"
+                apiUrl="/api/admin/users/bulk"
+                onSuccess={fetchUsers}
+                fileName="users"
+                templateData={[
+                    { username: 'john_doe', password: 'password123', nama: 'John Doe', email: 'john@example.com', role: 'peminjam' },
+                    { username: 'jane_smith', password: 'password456', nama: 'Jane Smith', email: 'jane@example.com', role: 'petugas' }
+                ]}
+            />
+            <Button onClick={() => {
+                setEditingUser(null);
+                setFormData({ username: '', password: '', nama: '', email: '', role: 'peminjam' });
+                setShowDialog(true);
+            }}>
+                <Plus className="mr-2 h-4 w-4" /> Tambah User
+            </Button>
+        </div>
       </div>
 
       <div className="rounded-md border bg-card">

@@ -5,6 +5,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { Wrench, Plus, Search, Edit, Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import ImportExcel from '@/components/ImportExcel';
 import {
   Table,
   TableBody,
@@ -269,15 +270,27 @@ export default function AlatPage() {
           </div>
         </div>
 
-        <Button onClick={() => {
-            setEditingAlat(null);
-            setFormData({ nama: '', deskripsi: '', kategori_id: '', jumlah: 0, status: 'tersedia', harga_per_hari: 0, foto: '' });
-            setSelectedFile(null);
-            setPreviewImage(null);
-            setShowDialog(true);
-        }}>
-            <Plus className="mr-2 h-4 w-4" /> Tambah Alat
-        </Button>
+        <div className="flex gap-2 w-full sm:w-auto">
+            <ImportExcel 
+                title="Alat"
+                apiUrl="/api/admin/alat/bulk"
+                onSuccess={fetchAlat}
+                fileName="alat"
+                templateData={[
+                    { nama: 'Laptop Asus ROG', deskripsi: 'Laptop Gaming High End', kategori_id: 1, jumlah: 5, status: 'tersedia', harga_per_hari: 150000 },
+                    { nama: 'Proyektor Epson', deskripsi: 'Proyektor Full HD', kategori_id: 2, jumlah: 3, status: 'tersedia', harga_per_hari: 100000 }
+                ]}
+            />
+            <Button onClick={() => {
+                setEditingAlat(null);
+                setFormData({ nama: '', deskripsi: '', kategori_id: '', jumlah: 0, status: 'tersedia', harga_per_hari: 0, foto: '' });
+                setSelectedFile(null);
+                setPreviewImage(null);
+                setShowDialog(true);
+            }}>
+                <Plus className="mr-2 h-4 w-4" /> Tambah Alat
+            </Button>
+        </div>
       </div>
 
       <div className="rounded-md border bg-card">
