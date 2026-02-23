@@ -28,6 +28,11 @@ export const toast = ({ title, description, variant = 'default' }: Omit<Toast, '
     }, 3000);
 };
 
+export const dismissToast = (id: string) => {
+    toasts = toasts.filter((t) => t.id !== id);
+    notify();
+};
+
 export const useToast = () => {
     const [currentToasts, setCurrentToasts] = useState<Toast[]>(toasts);
 
@@ -38,5 +43,9 @@ export const useToast = () => {
         };
     }, []);
 
-    return { toasts: currentToasts, toast };
+    return {
+        toasts: currentToasts,
+        toast,
+        dismiss: dismissToast
+    };
 };

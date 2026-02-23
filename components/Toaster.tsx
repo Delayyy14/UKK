@@ -17,11 +17,19 @@ export function Toaster() {
 }
 
 function ToastItem({ toast }: { toast: any }) {
+  const { dismiss } = useToast();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  const handleDismiss = () => {
+    setIsVisible(false);
+    setTimeout(() => {
+      dismiss(toast.id);
+    }, 300);
+  };
 
   const variantStyles = {
     default: 'bg-white border-gray-200 text-gray-900',
@@ -48,10 +56,16 @@ function ToastItem({ toast }: { toast: any }) {
       <div className="shrink-0 mt-0.5">
         {icons[toast.variant as keyof typeof icons] || icons.default}
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 pr-4">
         {toast.title && <h5 className="font-bold text-sm leading-tight mb-1">{toast.title}</h5>}
         {toast.description && <p className="text-xs opacity-80 leading-relaxed font-medium">{toast.description}</p>}
       </div>
+      <button 
+        onClick={handleDismiss}
+        className="shrink-0 rounded-lg p-1 hover:bg-black/5 transition-colors"
+      >
+        <X size={16} className="opacity-40" />
+      </button>
     </div>
   );
 }

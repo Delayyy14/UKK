@@ -28,7 +28,12 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     localStorage.removeItem('user');
     router.push('/login');
   };

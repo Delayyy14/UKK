@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyUser } from '@/lib/auth';
 import { logActivity } from '@/lib/activityLog';
+import { setAuthCookie } from '@/lib/token';
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,10 +23,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Set secure cookie
+    await setAuthCookie(user);
+
     // Log activity
-    const ipAddress = request.headers.get('x-forwarded-for') || 
-                     request.headers.get('x-real-ip') || 
-                     'unknown';
+    const ipAddress = request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
     await logActivity(user.id, 'Login', 'users', user.id, { username }, ipAddress);
 
     return NextResponse.json({
