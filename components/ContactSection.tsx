@@ -70,7 +70,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <h3 className="text-gray-900 font-semibold">Email Kami</h3>
-                <p className="text-gray-500">support@example.com</p>
+                <p className="text-gray-500">naufalazkaannahl@gmail.com</p>
               </div>
             </div>
             
@@ -83,7 +83,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <h3 className="text-gray-900 font-semibold">Kunjungi Kami</h3>
-                <p className="text-gray-500">Jl. Raya Ponorogo No. 123</p>
+                <p className="text-gray-500">Ponorogo, Jawa Timur, Indonesia</p>
               </div>
             </div>
           </div>

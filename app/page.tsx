@@ -2,9 +2,8 @@ import MainNavbar from '@/components/MainNavbar';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, CheckCircle, Clock, Shield } from 'lucide-react';
+import { ArrowRight, CheckCircle, Clock, Shield, MapPin, Users, Package, Calendar, Heart } from 'lucide-react';
 import pool from '@/lib/db';
 import ProductCard from '@/components/ProductCard';
 import ContactSection from '@/components/ContactSection';
@@ -45,122 +44,241 @@ export default async function LandingPage() {
       <MainNavbar />
       
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center px-6 md:px-12 lg:px-24 pt-32 pb-20 overflow-hidden">
+      <section className="relative min-h-[95vh] flex items-center justify-center px-6 md:px-12 lg:px-24 pt-32 pb-20 overflow-hidden">
         <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
           
           {/* Left Column: Text */}
           <div className="flex flex-col items-start text-left space-y-8 animate-in slide-in-from-left-8 duration-1000 z-10">
+
             <h1 className="text-5xl md:text-7xl lg:text-7xl font-serif font-medium tracking-tight text-gray-900 leading-[1.1]">
-              Pinjam Peralatan Pendakian dengan <br className="hidden lg:block"/>
-              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Mudah & Cepat</span>
+              Eksplorasi Alam Tanpa <br className="hidden lg:block"/>
+              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">Batas & Kendala</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-xl font-light leading-relaxed">
-              Platform digital modern untuk mempermudah akses peminjaman inventaris sekolah. 
-              Efisien, transparan, dan terintegrasi penuh.
+              Lengkapi petualanganmu dengan peralatan pendakian kualitas premium. 
+              Booking online, ambil di lokasi, dan nikmati perjalananmu dengan tenang.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4 w-full sm:w-auto">
               <Button size="lg" className="rounded-full px-10 h-14 text-lg bg-gray-900 text-white hover:bg-gray-800 transition-all font-medium w-full sm:w-auto shadow-xl hover:shadow-2xl hover:-translate-y-1" asChild>
                 <Link href="/products">
-                  Lihat Katalog <ArrowRight className="ml-2 h-5 w-5" />
+                  Mulai Pinjam Sekarang <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
+              <Button variant="outline" size="lg" className="rounded-full px-10 h-14 text-lg border-gray-200 hover:bg-gray-50 font-medium w-full sm:w-auto" asChild>
+                <Link href="#how-it-works">Cara Kerja</Link>
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-4 pt-6">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
+                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=User${i}`} alt="user" />
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-gray-500 font-medium">
+                <span className="text-gray-900 font-bold">500+</span> Pendaki telah bergabung
+              </p>
             </div>
           </div>
 
-          {/* Right Column: Image */}
-          <div className="relative w-full aspect-square lg:aspect-auto lg:h-[600px] flex items-center justify-center animate-in slide-in-from-right-8 duration-1000 delay-200 z-10">
+          {/* Right Column: Image - HIDDEN ON MOBILE */}
+          <div className="relative w-full aspect-square lg:aspect-auto lg:h-[600px] hidden lg:flex items-center justify-center animate-in slide-in-from-right-8 duration-1000 delay-200 z-10">
              {/* Decorative blob behind image */}
-             <div className="absolute inset-0 bg-gradient-to-tr from-blue-200/30 to-purple-200/30 rounded-full blur-3xl transform scale-90" />
-             {/* eslint-disable-next-line @next/next/no-img-element */}
+             <div className="absolute inset-0 bg-gradient-to-tr from-blue-200/40 to-purple-200/40 rounded-full blur-[100px] transform scale-110 animate-pulse" />
              <img 
                src="/images/svg/svg-1.1.png" 
                alt="Hero Illustration" 
-               className="w-full h-full object-contain drop-shadow-2xl relative z-20"
+               className="w-full h-full object-contain drop-shadow-2xl relative z-20 hover:scale-105 transition-transform duration-700 pointer-events-none"
              />
           </div>
+        </div>
+      </section>
 
+      {/* Stats Section */}
+      <section className="py-12 px-6 bg-white/40 border-y border-gray-100 backdrop-blur-sm relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { label: 'Total Alat', value: '150+', icon: Package },
+              { label: 'Peminjam Aktif', value: '450+', icon: Users },
+              { label: 'Transaksi Sukses', value: '1.2K', icon: CheckCircle },
+              { label: 'Kepuasan Peminjam', value: '4.9/5', icon: Heart },
+            ].map((stat, i) => (
+              <div key={i} className="text-center space-y-2">
+                <div className="flex justify-center">
+                  <stat.icon className="h-5 w-5 text-blue-600/50" />
+                </div>
+                <div className="text-3xl font-black text-gray-900">{stat.value}</div>
+                <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</div>
+              </div>
+            ))}
         </div>
       </section>
 
       {/* Features Section */}
       <section id="features" className="relative py-24 px-6 md:px-12 lg:px-24">
         <div className="text-center mb-16 relative z-10">
-         
-          <h2 className="text-4xl font-bold tracking-tight mb-4 text-gray-900">Mengapa Menggunakan Pinjamin?</h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto">Kami menghadirkan fitur-fitur terbaik untuk memastikan pengalaman peminjaman yang lancar dan menyenangkan.</p>
+          <Badge variant="outline" className="mb-4 text-blue-600 border-blue-200 bg-blue-50 px-4 py-1">Layanan Unggulan</Badge>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-gray-900">Mengapa Harus Di Sini?</h2>
+          <p className="text-gray-500 text-lg max-w-2xl mx-auto italic font-light">Kami memahami setiap langkah pendakianmu berharga.</p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto relative z-10">
           {[
             {
               icon: Clock,
-              title: "Efisiensi Waktu",
-              desc: "Proses pengajuan yang cepat tanpa antri manual. Hemat waktu berharga Anda.",
+              title: "Serba Instan",
+              desc: "Proses cepat tanpa ribet manual. Klik, bayar, berangkat.",
               color: "text-blue-600",
               bg: "bg-blue-50"
             },
             {
               icon: Shield,
-              title: "Aman & Terdata",
-              desc: "Setiap peminjaman tercatat sistematis dan aman dalam database terenkripsi.",
+              title: "Kualitas Terjamin",
+              desc: "Alat disterilkan & diperiksa kondisinya sebelum dipinjamkan.",
               color: "text-purple-600",
               bg: "bg-purple-50"
             },
             {
               icon: CheckCircle,
-              title: "Ketersediaan Realtime",
-              desc: "Cek stok alat langsung darimana saja tanpa perlu datang ke lokasi.",
+              title: "Stok Akurat",
+              desc: "Data stok real-time, tidak perlu takut alat habis saat di toko.",
               color: "text-pink-600",
               bg: "bg-pink-50"
             },
+            {
+              icon: MapPin,
+              title: "Lokasi Strategis",
+              desc: "Dekat dengan jalur utama pendakian, mudah diakses kendaraan.",
+              color: "text-indigo-600",
+              bg: "bg-indigo-50"
+            }
           ].map((feature, i) => (
-            <div key={i} className="group p-8 rounded-3xl bg-white border border-gray-100/50 shadow-lg shadow-gray-100/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className={`w-14 h-14 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 ${feature.color} group-hover:scale-110 transition-transform duration-300`}>
-                <feature.icon className="w-7 h-7" />
+            <div key={i} className="group p-8 rounded-[40px] bg-white border border-gray-100 shadow-sm hover:shadow-2xl hover:border-blue-100 hover:-translate-y-2 transition-all duration-500">
+              <div className={`w-16 h-16 rounded-3xl ${feature.bg} flex items-center justify-center mb-8 ${feature.color} group-hover:rotate-12 transition-all duration-500 shadow-inner`}>
+                <feature.icon className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-              <p className="text-gray-500 leading-relaxed">{feature.desc}</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed font-medium">{feature.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Product Preview Section */}
-      <section className="relative py-24 px-6 md:px-12 lg:px-24 bg-white/50 backdrop-blur-sm">
-        <div className="flex justify-between items-end mb-12 max-w-6xl mx-auto">
-          <div>
-            <h2 className="text-4xl font-bold tracking-tight mb-2 text-gray-900">Peralatan Pilihan</h2>
-            <p className="text-gray-500 text-lg">Jelajahi inventaris terbaru yang siap menemani petualanganmu.</p>
+      {/* How it Works Section */}
+      <section id="how-it-works" className="relative py-24 px-6 md:px-12 lg:px-24 bg-gray-50/50 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div className="space-y-8 order-2 lg:order-1">
+              <div className="space-y-2">
+                <Badge className="bg-blue-600">Step by Step</Badge>
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900">Bagaimana Cara Memulainya?</h2>
+                <p className="text-gray-500 font-light text-lg">Hanya butuh 4 langkah mudah untuk mendapatkan peralatan impianmu.</p>
+              </div>
+
+              <div className="space-y-12">
+                {[
+                  { step: '01', title: 'Pilih Alat', desc: 'Buka katalog dan pilih peralatan yang kamu butuhkan.', icon: Package },
+                  { step: '02', title: 'Tentukan Tanggal', desc: 'Pilih jadwal pendakianmu melalui sistem kalender kami.', icon: Calendar },
+                  { step: '03', title: 'Konfirmasi Bayar', desc: 'Admin akan mengecek pesananmu secepat kilat.', icon: Shield },
+                  { step: '04', title: 'Ambil & Berangkat', desc: 'Tunjukkan bukti digital saat mengambil alat di toko.', icon: MapPin },
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-6 items-start group">
+                    <div className="text-4xl font-black text-blue-100 transition-colors group-hover:text-blue-500 duration-300">{item.step}</div>
+                    <div className="space-y-1">
+                      <h4 className="text-xl font-bold text-gray-900">{item.title}</h4>
+                      <p className="text-gray-500 leading-relaxed text-sm">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative order-1 lg:order-2">
+               <div className="aspect-square rounded-[60px] bg-gradient-to-br from-blue-600 to-purple-700 shadow-2xl overflow-hidden relative group">
+                  <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay opacity-60 group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-12 text-center space-y-4">
+                    <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center mb-4">
+                      <ArrowRight className="w-10 h-10 rotate-[-45deg]" />
+                    </div>
+                    <h3 className="text-3xl font-bold uppercase tracking-tighter">Your Adventure Starts Here</h3>
+                    <p className="text-blue-100 font-light">Kami temani langkahmu sampai puncak tertinggi.</p>
+                  </div>
+               </div>
+               {/* Floating elements */}
+               <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 hidden md:block">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-green-100 text-green-600 p-2 rounded-lg">
+                      <CheckCircle size={24} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Mari Menjelajah</p>
+                      <p className="text-sm font-black text-gray-900">Persiapkan Diri Anda!</p>
+                    </div>
+                  </div>
+               </div>
+            </div>
           </div>
-          <Button variant="ghost" asChild className="hidden md:flex text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-            <Link href="/products">Lihat Semua <ArrowRight className="ml-2 w-4 h-4" /></Link>
+        </div>
+      </section>
+
+      {/* Product Preview Section */}
+      <section className="relative py-32 px-6 md:px-12 lg:px-24 bg-white">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 max-w-7xl mx-auto gap-4">
+          <div className="space-y-2">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">Peralatan Pilihan</h2>
+            <p className="text-gray-500 text-lg font-light tracking-wide italic">"Quality tools for quality hike."</p>
+          </div>
+          <Button size="lg" variant="ghost" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 group font-bold">
+            <Link href="/products" className="flex items-center">
+              Lihat Semua Katalog <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
+            </Link>
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
           {products.length > 0 ? (
             products.map((item: any) => (
               <ProductCard key={item.id} item={item} />
             ))
           ) : (
-            <div className="col-span-3 text-center py-20 rounded-3xl bg-gray-50 border border-dashed border-gray-200">
-              <div className="text-gray-400 mb-2">Belum ada data alat saat ini.</div>
-              <p className="text-sm text-gray-400">Silakan cek kembali nanti.</p>
+            <div className="col-span-3 text-center py-24 rounded-3xl bg-gray-50 border border-dashed border-gray-200">
+              <div className="text-gray-300 mb-2">
+                <Package size={48} className="mx-auto opacity-20 mb-4" />
+              </div>
+              <p className="text-gray-400 font-medium">Belum ada data alat saat ini.</p>
+              <p className="text-xs text-gray-400 mt-1 italic">Silakan hubungi kami untuk ketersediaan manual.</p>
             </div>
           )}
         </div>
-        
-        <div className="mt-12 text-center md:hidden">
-          <Button variant="outline" size="lg" asChild className="w-full rounded-xl border-gray-200">
-            <Link href="/products">Lihat Semua Katalog</Link>
-          </Button>
-        </div>
       </section>
-
-
 
       {/* Testimonial Section */}
       <TestimonialSection />
+
+      {/* Final CTA Section */}
+      <section className="py-24 px-6 md:px-12 lg:px-24 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+           <div className="bg-gray-900 rounded-[60px] p-10 md:p-20 relative overflow-hidden text-center space-y-8">
+              {/* Background Glow */}
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 blur-[100px] rounded-full -mr-64 -mt-64" />
+              <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-600/20 blur-[100px] rounded-full -ml-32 -mb-32" />
+
+              <h2 className="text-4xl md:text-6xl font-bold text-white relative z-10 leading-tight">
+                Siap Melakukan <br className="hidden md:block"/> Petualangan Selanjutnya?
+              </h2>
+              <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto relative z-10 font-light">
+                Dapatkan promo diskon member 10% untuk setiap peminjaman alat pertamamu. Bergabunglah bersama ratusan pendaki lainnya.
+              </p>
+              <div className="pt-4 relative z-10">
+                <Button size="lg" className="rounded-full px-12 h-16 text-xl bg-blue-600 text-white hover:bg-blue-500 shadow-2xl shadow-blue-600/30 hover:-translate-y-1 transition-all" asChild>
+                  <Link href="/register">Buat Akun Sekarang</Link>
+                </Button>
+              </div>
+           </div>
+        </div>
+      </section>
 
       {/* Contact Section */}
       <ContactSection />

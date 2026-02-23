@@ -44,9 +44,8 @@ export default function Footer() {
         {/* Kontak */}
         <div>
           <h4 className="font-semibold mb-3">Kontak</h4>
-          <p className="text-muted-foreground">Email: support@peminjamanalat.com</p>
-          <p className="text-muted-foreground">Telp: +62 812-3456-7890</p>
-          <p className="text-muted-foreground">Malang, Indonesia</p>
+          <p className="text-muted-foreground">Email: naufalazkaannahl@gmail.com</p>
+          <p className="text-muted-foreground">Ponorogo, Jawa Timur, Indonesia</p>
         </div>
 
       </div>
