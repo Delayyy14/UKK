@@ -90,7 +90,7 @@ export default async function LandingPage() {
              <img 
                src="/images/svg/svg-1.1.png" 
                alt="Hero Illustration" 
-               className="w-full h-full object-contain drop-shadow-2xl relative z-20 hover:scale-105 transition-transform duration-700 pointer-events-none"
+               className="w-full h-full object-contain drop-shadow-2xl relative z-20 hover:scale-105 transition-transform duration-700 pointer-events-none md:block hidden"
              />
           </div>
         </div>
