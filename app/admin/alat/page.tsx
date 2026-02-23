@@ -409,11 +409,14 @@ export default function AlatPage() {
                     <Label htmlFor="jumlah">Jumlah Total</Label>
                     <Input
                         id="jumlah"
-                        type="number"
-                        min="0"
-                        value={formData.jumlah}
-                        onChange={(e) => setFormData({ ...formData, jumlah: parseInt(e.target.value) || 0 })}
+                        type="text"
+                        value={formData.jumlah === 0 ? '' : formData.jumlah.toString()}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          setFormData({ ...formData, jumlah: parseInt(val) || 0 });
+                        }}
                         required
+                        placeholder="0"
                     />
                 </div>
             </div>
@@ -439,13 +442,17 @@ export default function AlatPage() {
                 <Label htmlFor="harga_per_hari">Harga Sewa per Hari (Rp)</Label>
                 <Input
                     id="harga_per_hari"
-                    type="number"
-                    min="0"
-                    value={formData.harga_per_hari}
-                    onChange={(e) => setFormData({ ...formData, harga_per_hari: parseFloat(e.target.value) || 0 })}
+                    type="text"
+                    value={formData.harga_per_hari === 0 ? '' : formData.harga_per_hari.toString()}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      setFormData({ ...formData, harga_per_hari: parseInt(val) || 0 });
+                    }}
                     required
                     placeholder="Contoh: 50000"
+                    className="font-medium"
                 />
+                <p className="text-[10px] text-muted-foreground italic">Input angka saja tanpa titik/koma (Contoh: 50000)</p>
             </div>
 
             <div className="space-y-2">
