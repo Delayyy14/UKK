@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS alat (
     jumlah_tersedia INTEGER NOT NULL DEFAULT 0,
     status VARCHAR(20) DEFAULT 'tersedia' CHECK (status IN ('tersedia', 'tidak_tersedia', 'rusak')),
     foto VARCHAR(500),
+    harga_per_hari DECIMAL(10, 2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -49,6 +50,7 @@ CREATE TABLE IF NOT EXISTS peminjaman (
     alasan TEXT,
     catatan TEXT,
     approved_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    total_harga DECIMAL(12, 2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

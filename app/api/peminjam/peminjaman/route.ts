@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, alasan } = await request.json();
+    const { user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, alasan, total_harga } = await request.json();
 
     // Validate required fields
     if (!user_id || !alat_id || !jumlah || !tanggal_pinjam || !tanggal_kembali) {
@@ -69,10 +69,10 @@ export async function POST(request: NextRequest) {
 
     // Create peminjaman
     const result = await pool.query(
-      `INSERT INTO peminjaman (user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, status, alasan) 
-       VALUES ($1, $2, $3, $4, $5, 'pending', $6) 
+      `INSERT INTO peminjaman (user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, status, alasan, total_harga) 
+       VALUES ($1, $2, $3, $4, $5, 'pending', $6, $7) 
        RETURNING *`,
-      [user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, alasan || null]
+      [user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, alasan || null, total_harga || 0]
     );
 
     const peminjaman = result.rows[0];
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(peminjaman, { status: 201 });
   } catch (error: any) {
     console.error('Error creating peminjaman:', error);
-    
+
     // Provide more specific error messages
     if (error.code === '23505') {
       return NextResponse.json(
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     if (error.code === '23503') {
       return NextResponse.json(
         { error: 'Data referensi tidak valid' },

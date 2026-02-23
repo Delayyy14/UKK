@@ -19,6 +19,7 @@ interface PeminjamanDetail {
   tanggal_kembali: string;
   status: string;
   alasan?: string;
+  total_harga: number;
   created_at: string;
 }
 
@@ -35,6 +36,14 @@ function BuktiTemplate({ data, type }: { data: PeminjamanDetail; type: 'PETUGAS'
     month: 'long',
     year: 'numeric'
   });
+
+  const formatIDR = (amount: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
 
   return (
     <div className="p-6 mb-8 relative font-serif text-black h-[13cm] overflow-hidden bg-white">
@@ -79,9 +88,9 @@ function BuktiTemplate({ data, type }: { data: PeminjamanDetail; type: 'PETUGAS'
 
         {/* Nomor Induk / Username */}
         <div className="flex items-end">
-             <span className="w-48">ID / Username</span>
+             <span className="w-48">Username</span>
              <span className="mr-2">:</span>
-             <div className="flex-1 border-b border-dotted border-black px-2">{data.user_id} / {data.user_username}</div>
+             <div className="flex-1 border-b border-dotted border-black px-2">{data.user_username}</div>
         </div>
 
         {/* Alat */}
@@ -112,6 +121,13 @@ function BuktiTemplate({ data, type }: { data: PeminjamanDetail; type: 'PETUGAS'
              <span className="w-48">Keperluan / Alasan</span>
              <span className="mr-2">:</span>
              <div className="flex-1 border-b border-dotted border-black px-2 italic">{data.alasan || '-'}</div>
+        </div>
+
+        {/* Biaya */}
+        <div className="flex items-end">
+             <span className="w-48">Total Biaya Sewa</span>
+             <span className="mr-2">:</span>
+             <div className="flex-1 border-b border-dotted border-black px-2 font-bold">{formatIDR(data.total_harga || 0)}</div>
         </div>
 
          {/* Status */}
@@ -186,6 +202,18 @@ function BuktiPageContent() {
     );
   }
   if (!data) return <div className="min-h-screen flex items-center justify-center">Data tidak ditemukan</div>;
+
+  if (data.status === 'pending') {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Menunggu Persetujuan</h2>
+        <p className="text-gray-600 mb-6 max-w-md text-center">Peminjaman Anda masih dalam status "Pending". Menunggu disetujui oleh petugas/admin sebelum Anda bisa mencetak bukti.</p>
+        <button onClick={() => router.push('/dashboard')} className="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700">
+          Kembali ke Dashboard
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">

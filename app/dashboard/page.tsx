@@ -570,7 +570,7 @@ export default function DashboardPage() {
                     <TableCell>{getStatusBadge(item.status)}</TableCell>
                     <TableCell>
                         <div className="flex items-center gap-2">
-                        {(item.status === 'pending' || item.status === 'disetujui') && (
+                        {(item.status === 'disetujui') && (
                             <Button size="sm" asChild>
                                 <a href={`/peminjam/peminjaman/${item.id}/bukti`} target="_blank">
                                     Cetak Bukti

@@ -157,7 +157,7 @@ export default function KembalikanPage() {
                 </td> 
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex gap-2">
-                    {(item.status === 'pending' || item.status === 'disetujui') && (
+                    {(item.status === 'disetujui') && (
                     <a
                         href={`/peminjam/peminjaman/${item.id}/bukti`}
                         target="_blank"

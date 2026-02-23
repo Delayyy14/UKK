@@ -34,11 +34,13 @@ interface Product {
   status: string;
   foto: string;
   kategori_nama: string;
+  harga_per_hari: number;
 }
 
 interface Category {
   id: number;
   nama: string;
+  harga_per_hari: number;
 }
 
 interface ProductCatalogProps {

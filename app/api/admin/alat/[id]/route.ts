@@ -8,14 +8,14 @@ export async function PUT(
 ) {
   try {
     const id = parseInt(params.id);
-    const { nama, deskripsi, kategori_id, jumlah, status, foto } = await request.json();
+    const { nama, deskripsi, kategori_id, jumlah, status, foto, harga_per_hari } = await request.json();
 
     const result = await pool.query(
       `UPDATE alat 
-       SET nama = $1, deskripsi = $2, kategori_id = $3, jumlah = $4, status = $5, foto = $6, updated_at = CURRENT_TIMESTAMP
-       WHERE id = $7 
+       SET nama = $1, deskripsi = $2, kategori_id = $3, jumlah = $4, status = $5, foto = $6, harga_per_hari = $7, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $8 
        RETURNING *`,
-      [nama, deskripsi || null, kategori_id || null, jumlah, status, foto || null, id]
+      [nama, deskripsi || null, kategori_id || null, jumlah, status, foto || null, harga_per_hari || 0, id]
     );
 
     if (result.rows.length === 0) {
@@ -35,10 +35,10 @@ export async function PUT(
     );
 
     return NextResponse.json(result.rows[0]);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating alat:', error);
     return NextResponse.json(
-      { error: 'Error updating alat' },
+      { error: `Error updating alat: ${error.message}` },
       { status: 500 }
     );
   }

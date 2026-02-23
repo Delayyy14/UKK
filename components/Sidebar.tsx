@@ -19,13 +19,12 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area"; // Wait, I didn't create ScrollArea. I'll stick to div for now.
 
 interface SidebarProps {
   userRole: 'admin' | 'petugas' | 'peminjam';
 }
 
-export default function Sidebar({ userRole }: SidebarProps) {
+export function SidebarContent({ userRole, onItemClick }: SidebarProps & { onItemClick?: () => void }) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -60,15 +59,15 @@ export default function Sidebar({ userRole }: SidebarProps) {
   const menuItems = userRole === 'admin' ? adminMenu : userRole === 'petugas' ? petugasMenu : peminjamMenu;
 
   return (
-    <div className="no-print border-r bg-muted/40 text-foreground w-64 min-h-screen fixed left-0 top-0 hidden md:block">
+    <div className="flex flex-col h-full">
       <div className="flex h-16 items-center border-b px-6">
         <h2 className="text-lg font-bold tracking-tight flex items-center gap-2">
           <Menu className="h-6 w-6" />
-          <span>Aplikasi Peminjaman Alat</span>
+          <span>PinjamAlat</span>
         </h2>
       </div>
-      <div className="py-4">
-        <nav className="grid items-start px-2 text-xs font-medium lg:px-4 space-y-1">
+      <div className="py-4 flex-1">
+        <nav className="grid items-start px-2 text-sm font-medium lg:px-4 space-y-1">
           {menuItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -80,7 +79,10 @@ export default function Sidebar({ userRole }: SidebarProps) {
                   "w-full justify-start gap-3",
                   isActive && "bg-secondary text-secondary-foreground shadow-sm"
                 )}
-                onClick={() => router.push(item.path)}
+                onClick={() => {
+                  router.push(item.path);
+                  if (onItemClick) onItemClick();
+                }}
               >
                 <Icon className="h-4 w-4" />
                 {item.name}
@@ -89,6 +91,14 @@ export default function Sidebar({ userRole }: SidebarProps) {
           })}
         </nav>
       </div>
+    </div>
+  );
+}
+
+export default function Sidebar({ userRole }: SidebarProps) {
+  return (
+    <div className="no-print border-r bg-muted/40 text-foreground w-64 min-h-screen fixed left-0 top-0 hidden md:block">
+      <SidebarContent userRole={userRole} />
     </div>
   );
 }

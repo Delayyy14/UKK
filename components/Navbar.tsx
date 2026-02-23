@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, User, Settings, ChevronDown, Home } from 'lucide-react';
+import { LogOut, User, Settings, ChevronDown, Home, Menu } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -14,15 +14,19 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { SidebarContent } from './Sidebar';
+import { useState } from 'react';
 
 interface NavbarProps {
   userName: string;
-  userRole: string;
+  userRole: 'admin' | 'petugas' | 'peminjam';
   userFoto?: string;
 }
 
 export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -42,8 +46,8 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
     }
   };
 
-  // Get initials for avatar fallback
   const getInitials = (name: string) => {
+    if (!name) return '??';
     const names = name.split(' ');
     let initials = names[0].substring(0, 1).toUpperCase();
     if (names.length > 1) {
@@ -54,24 +58,36 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
 
   return (
     <nav className="bg-background border-b border-border shadow-sm sticky top-0 z-40 h-16 flex items-center">
-      <div className="w-full px-6 flex items-center justify-between">
-        {/* Left Side - Welcome Message */}
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">
-            Halo, <span className="text-primary">{userName}</span>!
-          </h1>
-          <p className="text-sm text-muted-foreground hidden md:block">
-            Selamat Datang Di Dashboard {getRoleLabel(userRole)} Anda.
-          </p>
+      <div className="w-full px-4 md:px-6 flex items-center justify-between">
+        {/* Left Side - Hamburger (Mobile) + Welcome Message */}
+        <div className="flex items-center gap-3">
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-64 border-r">
+              <SidebarContent userRole={userRole} onItemClick={() => setOpen(false)} />
+            </SheetContent>
+          </Sheet>
+
+          <div>
+            <h1 className="text-lg md:text-xl font-semibold text-foreground leading-tight">
+              Halo, <span className="text-primary">{userName}</span>!
+            </h1>
+            <p className="text-xs text-muted-foreground hidden md:block">
+              Selamat Datang Di Dashboard {getRoleLabel(userRole)} Anda.
+            </p>
+          </div>
         </div>
 
         {/* Right Side - Actions & Profile */}
-        <div className="flex items-center gap-4">
-             {/* Back to Home Button */}
+        <div className="flex items-center gap-2 md:gap-4">
             <Button variant="outline" size="sm" asChild className="hidden md:flex gap-2">
                 <Link href="/">
                     <Home className="h-4 w-4" />
-                    Kembali ke Beranda
+                    Beranda
                 </Link>
             </Button>
 
@@ -79,21 +95,21 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="group relative h-10 w-full md:w-auto justify-start gap-2 px-2"
+                  className="group relative h-10 flex items-center gap-2 px-2 hover:bg-muted/50 rounded-full"
                 >
-                  <div className="text-right hidden md:block mr-2">
+                  <div className="text-right hidden sm:block mr-1">
                     <p className="text-sm font-medium leading-none">{userName}</p>
-                    <p className="text-xs text-muted-foreground">{getRoleLabel(userRole)}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">{getRoleLabel(userRole)}</p>
                   </div>
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-8 w-8 border border-border">
                     <AvatarImage src={userFoto} alt={userName} />
                     <AvatarFallback>{getInitials(userName)}</AvatarFallback>
                   </Avatar>
-                  <ChevronDown className="ml-2 h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+                  <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
+                <DropdownMenuLabel className="font-normal p-4">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{userName}</p>
                     <p className="text-xs leading-none text-muted-foreground">
@@ -102,11 +118,10 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {/* Mobile Back to Home - Only visible inside dropdown on small screens if we wanted, but let's keep it consistent */}
                 <DropdownMenuItem asChild className="md:hidden">
                     <Link href="/">
                         <Home className="mr-2 h-4 w-4" />
-                        <span>Kembali ke Beranda</span>
+                        <span>Beranda</span>
                     </Link>
                 </DropdownMenuItem>
                 
@@ -114,7 +129,8 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Pengaturan</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Keluar</span>
                 </DropdownMenuItem>

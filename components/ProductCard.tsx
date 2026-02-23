@@ -66,7 +66,7 @@ export default function ProductCard({ item }: ProductCardProps) {
           </p>
         </CardContent>
         <CardFooter className="p-4 pt-0 flex justify-between items-center text-sm font-medium gap-2">
-          <span className="text-muted-foreground">Stok: {item.jumlah_tersedia} / {item.jumlah}</span>
+          <span className="text-muted-foreground">Harga: {item.harga_per_hari} / Hari</span>
           <Button 
             size="sm" 
             variant="default"

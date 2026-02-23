@@ -48,6 +48,7 @@ interface Alat {
   jumlah: number;
   jumlah_tersedia: number;
   status: string;
+  harga_per_hari: number;
   foto?: string;
 }
 
@@ -67,6 +68,7 @@ export default function AlatPage() {
     kategori_id: '',
     jumlah: 0,
     status: 'tersedia',
+    harga_per_hari: 0,
     foto: '',
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -138,6 +140,7 @@ export default function AlatPage() {
         foto: fotoUrl,
         kategori_id: formData.kategori_id ? parseInt(formData.kategori_id) : null,
         jumlah: parseInt(formData.jumlah.toString()),
+        harga_per_hari: parseFloat(formData.harga_per_hari.toString()) || 0,
       };
 
       const res = await fetch(url, {
@@ -149,7 +152,7 @@ export default function AlatPage() {
       if (res.ok) {
         setShowDialog(false);
         setEditingAlat(null);
-        setFormData({ nama: '', deskripsi: '', kategori_id: '', jumlah: 0, status: 'tersedia', foto: '' });
+        setFormData({ nama: '', deskripsi: '', kategori_id: '', jumlah: 0, status: 'tersedia', harga_per_hari: 0, foto: '' });
         setSelectedFile(null);
         setPreviewImage(null);
         fetchAlat();
@@ -172,6 +175,7 @@ export default function AlatPage() {
       kategori_id: item.kategori_id?.toString() || '',
       jumlah: item.jumlah,
       status: item.status,
+      harga_per_hari: item.harga_per_hari || 0,
       foto: item.foto || '',
     });
     setPreviewImage(item.foto || null);
@@ -264,7 +268,7 @@ export default function AlatPage() {
 
         <Button onClick={() => {
             setEditingAlat(null);
-            setFormData({ nama: '', deskripsi: '', kategori_id: '', jumlah: 0, status: 'tersedia', foto: '' });
+            setFormData({ nama: '', deskripsi: '', kategori_id: '', jumlah: 0, status: 'tersedia', harga_per_hari: 0, foto: '' });
             setSelectedFile(null);
             setPreviewImage(null);
             setShowDialog(true);
@@ -283,6 +287,7 @@ export default function AlatPage() {
               <TableHead>Kategori</TableHead>
               <TableHead>Jumlah</TableHead>
               <TableHead>Tersedia</TableHead>
+              <TableHead>Harga/Hari</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Aksi</TableHead>
             </TableRow>
@@ -309,6 +314,7 @@ export default function AlatPage() {
                       <TableCell>{item.kategori_nama || '-'}</TableCell>
                       <TableCell>{item.jumlah}</TableCell>
                       <TableCell>{item.jumlah_tersedia}</TableCell>
+                      <TableCell>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.harga_per_hari || 0)}</TableCell>
                       <TableCell>
                         <Badge variant={item.status === 'tersedia' ? 'default' : item.status === 'rusak' ? 'destructive' : 'secondary'}>
                             {item.status === 'tersedia' ? 'Tersedia' : item.status === 'rusak' ? 'Rusak' : 'Tidak Tersedia'}
@@ -427,6 +433,19 @@ export default function AlatPage() {
                         <SelectItem value="rusak">Rusak</SelectItem>
                     </SelectContent>
                 </Select>
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="harga_per_hari">Harga Sewa per Hari (Rp)</Label>
+                <Input
+                    id="harga_per_hari"
+                    type="number"
+                    min="0"
+                    value={formData.harga_per_hari}
+                    onChange={(e) => setFormData({ ...formData, harga_per_hari: parseFloat(e.target.value) || 0 })}
+                    required
+                    placeholder="Contoh: 50000"
+                />
             </div>
 
             <div className="space-y-2">
