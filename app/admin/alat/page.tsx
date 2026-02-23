@@ -449,10 +449,9 @@ export default function AlatPage() {
                       setFormData({ ...formData, harga_per_hari: parseInt(val) || 0 });
                     }}
                     required
-                    placeholder="Contoh: 50000"
+                    placeholder="Masukkan harga (Rp/hari)"
                     className="font-medium"
                 />
-                <p className="text-[10px] text-muted-foreground italic">Input angka saja tanpa titik/koma (Contoh: 50000)</p>
             </div>
 
             <div className="space-y-2">
