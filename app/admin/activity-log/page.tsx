@@ -5,6 +5,14 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { FileText } from 'lucide-react';
 import Pagination from '@/components/Pagination';   
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface ActivityLog {
   id: number;
@@ -61,39 +69,39 @@ export default function ActivityLogPage() {
         icon={FileText}
       />
 
-      <div className="bg-white rounded-lg shadow overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Table</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Record ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">IP Address</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Waktu</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+      <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[50px]">ID</TableHead>
+              <TableHead>User</TableHead>
+              <TableHead>Action</TableHead>
+              <TableHead>Table</TableHead>
+              <TableHead>Record ID</TableHead>
+              <TableHead>IP Address</TableHead>
+              <TableHead>Waktu</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {paginatedLogs.map((log) => (
-              <tr key={log.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{log.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{log.user_nama || log.user_id || 'System'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{log.action}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{log.table_name || '-'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{log.record_id || '-'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{log.ip_address || '-'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <TableRow key={log.id}>
+                <TableCell className="font-medium">{log.id}</TableCell>
+                <TableCell>{log.user_nama || log.user_id || 'System'}</TableCell>
+                <TableCell>{log.action}</TableCell>
+                <TableCell>{log.table_name || '-'}</TableCell>
+                <TableCell>{log.record_id || '-'}</TableCell>
+                <TableCell>{log.ip_address || '-'}</TableCell>
+                <TableCell>
                   {new Date(log.created_at).toLocaleString('id-ID')}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
 
-<div className="flex justify-between mt-4">
-        Menampilkan {logs.length} dari {logs.length} data users.
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4 text-center sm:text-left">
+        <span className="text-sm text-muted-foreground">
+          Menampilkan {paginatedLogs.length} dari {logs.length} data logs.
+        </span>
       
 
       <Pagination

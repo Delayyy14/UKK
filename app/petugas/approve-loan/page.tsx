@@ -5,6 +5,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { CheckCircle, Package, User, Calendar, X, XCircle, Search } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import Swal from 'sweetalert2';
 
 interface Peminjaman {
   id: number;
@@ -80,8 +81,6 @@ export default function ApproveLoanPage() {
   };
 
   const handleApproveAll = async (items: Peminjaman[]) => {
-    if (!confirm(`Setujui semua (${items.length}) permintaan dari user ini?`)) return;
-    
     try {
       const userStr = localStorage.getItem('user');
       if (!userStr) return;

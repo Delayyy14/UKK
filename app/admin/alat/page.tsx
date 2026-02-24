@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Wrench, Plus, Search, Edit, Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ImportExcel from '@/components/ImportExcel';
+import Swal from 'sweetalert2';
 import {
   Table,
   TableBody,
@@ -199,19 +200,30 @@ export default function AlatPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Yakin ingin menghapus alat ini?')) return;
-
-    try {
-      const res = await fetch(`/api/admin/alat/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchAlat();
-        toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
-      } else {
-        toast({ title: 'Gagal', description: 'Gagal menghapus alat', variant: 'destructive' });
+    Swal.fire({
+      title: 'Apakah anda yakin?',
+      text: "Data yang dihapus tidak dapat dikembalikan!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await fetch(`/api/admin/alat/${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            fetchAlat();
+            toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
+          } else {
+            toast({ title: 'Gagal', description: 'Gagal menghapus alat', variant: 'destructive' });
+          }
+        } catch (error) {
+          toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
+        }
       }
-    } catch (error) {
-      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
-    }
+    });
   };
 
   if (loading) return <Layout><div className="flex justify-center p-8">Loading...</div></Layout>;
@@ -293,8 +305,7 @@ export default function AlatPage() {
         </div>
       </div>
 
-      <div className="rounded-md border bg-card">
-        <Table>
+      <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[50px]">ID</TableHead>
@@ -358,10 +369,11 @@ export default function AlatPage() {
             
           </TableBody>
         </Table>
-      </div>
 
-      <div className="flex justify-between mt-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4 text-center sm:text-left">
+            <span className="text-sm text-muted-foreground">
               Menampilkan {paginatedAlat.length} dari {alat.length} data alat.
+            </span>
             
       
             <Pagination

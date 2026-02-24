@@ -5,6 +5,14 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Peminjaman {
   id: number;
@@ -114,32 +122,31 @@ export default function KembalikanPage() {
         />
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alat</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jumlah</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Pinjam</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Kembali</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+      <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>Alat</TableHead>
+              <TableHead>Jumlah</TableHead>
+              <TableHead>Tanggal Pinjam</TableHead>
+              <TableHead>Tanggal Kembali</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Aksi</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {filteredPeminjaman.map((item) => (
-              <tr key={item.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.alat_nama || item.alat_id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.jumlah}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">{item.id}</TableCell>
+                <TableCell>{item.alat_nama || item.alat_id}</TableCell>
+                <TableCell>{item.jumlah}</TableCell>
+                <TableCell>
                   {new Date(item.tanggal_pinjam).toLocaleDateString('id-ID')}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                </TableCell>
+                <TableCell>
                   {item.tanggal_kembali ? new Date(item.tanggal_kembali).toLocaleDateString('id-ID') : '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                </TableCell>
+                <TableCell>
                   <span
                     className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${
                       item.status === 'disetujui'
@@ -155,8 +162,8 @@ export default function KembalikanPage() {
                       ? 'Sedang Dipinjam'
                       : item.status}
                   </span>
-                </td> 
-                <td className="px-4 py-4 whitespace-nowrap">
+                </TableCell> 
+                <TableCell>
                   <div className="flex gap-2">
                     {(item.status === 'disetujui') && (
                     <a
@@ -168,11 +175,11 @@ export default function KembalikanPage() {
                       </a>
                     )}
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
         {filteredPeminjaman.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             {activePeminjaman.length === 0 
@@ -180,7 +187,7 @@ export default function KembalikanPage() {
               : 'Tidak ada data yang ditemukan'}
           </div>
         )}
-      </div>
+
 
       {showModal && selectedPeminjaman && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

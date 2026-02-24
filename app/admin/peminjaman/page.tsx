@@ -5,6 +5,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { ClipboardList, CheckCircle, XCircle, Package, User, Calendar, Search } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import Swal from 'sweetalert2';
 import {
   Card,
   CardContent,
@@ -159,33 +160,31 @@ export default function PeminjamanPage() {
   };
 
   const handleUpdateStatus = async (item: Peminjaman, newStatus: string) => {
-    if (!confirm(`Apakah anda yakin ingin mengubah status menjadi ${newStatus}?`)) return;
-
     try {
-        const payload = {
-            user_id: item.user_id,
-            alat_id: item.alat_id,
-            jumlah: item.jumlah,
-            tanggal_pinjam: item.tanggal_pinjam,
-            tanggal_kembali: item.tanggal_kembali,
-            status: newStatus,
-            alasan: item.alasan
-        };
+      const payload = {
+          user_id: item.user_id,
+          alat_id: item.alat_id,
+          jumlah: item.jumlah,
+          tanggal_pinjam: item.tanggal_pinjam,
+          tanggal_kembali: item.tanggal_kembali,
+          status: newStatus,
+          alasan: item.alasan
+      };
 
-        const res = await fetch(`/api/admin/peminjaman/${item.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
+      const res = await fetch(`/api/admin/peminjaman/${item.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+      });
 
-        const data = await res.json();
+      const data = await res.json();
 
-        if (res.ok) {
-            fetchPeminjaman();
-            toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
-        } else {
-            toast({ title: 'Gagal', description: data.error || 'Gagal memperbarui status', variant: 'destructive' });
-        }
+      if (res.ok) {
+          fetchPeminjaman();
+          toast({ title: 'Berhasil', description: 'Status berhasil diperbarui', variant: 'success' });
+      } else {
+          toast({ title: 'Gagal', description: data.error || 'Gagal memperbarui status', variant: 'destructive' });
+      }
     } catch (error) {
         console.error(error);
         toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
@@ -193,8 +192,6 @@ export default function PeminjamanPage() {
   };
 
   const handleUpdateStatusAll = async (items: Peminjaman[], newStatus: string) => {
-    if (!confirm(`Ubah status semua (${items.length}) barang menjadi ${newStatus}?`)) return;
-    
     try {
       const promises = items.map(item => 
         fetch(`/api/admin/peminjaman/${item.id}`, {
@@ -209,9 +206,9 @@ export default function PeminjamanPage() {
 
       await Promise.all(promises);
       fetchPeminjaman();
-      toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
+      toast({ title: 'Berhasil', description: `Status semua barang berhasil diubah ke ${newStatus}`, variant: 'success' });
     } catch (error) {
-      toast({ title: 'Error', description: 'Terjadi kesalahan saat memperbarui semua status', variant: 'destructive' });
+      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
     }
   };
 

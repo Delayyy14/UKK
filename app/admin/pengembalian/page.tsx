@@ -3,8 +3,19 @@
 import Layout from '@/components/Layout';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Edit, Trash2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import Pagination from '@/components/Pagination';
+import Swal from 'sweetalert2';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 interface Pengembalian {
   id: number;
@@ -114,19 +125,30 @@ export default function PengembalianPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Yakin ingin menghapus pengembalian ini?')) return;
-
-    try {
-      const res = await fetch(`/api/admin/pengembalian/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchPengembalian();
-        toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
-      } else {
-        toast({ title: 'Gagal', description: 'Gagal menghapus pengembalian', variant: 'destructive' });
+    Swal.fire({
+      title: 'Apakah anda yakin?',
+      text: "Data yang dihapus tidak dapat dikembalikan!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await fetch(`/api/admin/pengembalian/${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            fetchPengembalian();
+            toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
+          } else {
+            toast({ title: 'Gagal', description: 'Gagal menghapus pengembalian', variant: 'destructive' });
+          }
+        } catch (error) {
+          toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
+        }
       }
-    } catch (error) {
-      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
-    }
+    });
   };
 
   if (loading) return <Layout><div>Loading...</div></Layout>;
@@ -201,91 +223,56 @@ export default function PengembalianPage() {
 </div>
 
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Peminjaman</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Kembali</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kondisi</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Denda</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+      <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>Peminjaman</TableHead>
+              <TableHead>Tanggal Kembali</TableHead>
+              <TableHead>Kondisi</TableHead>
+              <TableHead>Denda</TableHead>
+              <TableHead className="text-right">Aksi</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {paginatedPengembalian.map((item) => (
-              <tr key={item.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.peminjaman_info || item.peminjaman_id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{new Date(item.tanggal_kembali).toLocaleDateString('id-ID')}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.kondisi}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp {item.denda.toLocaleString('id-ID')}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button
-  onClick={() => handleEdit(item)}
-  className="px-4 py-2 mr-3 rounded-lg font-medium bg-gray-700 text-white
-             hover:bg-gray-600 transition-all duration-200 transform hover:scale-105"
->
-  EDIT
-</button>
-
-<button
-  onClick={() => handleDelete(item.id)}
-  className="px-4 py-2 rounded-lg font-medium bg-gray-500 text-white
-             hover:bg-gray-400 transition-all duration-200 transform hover:scale-105"
->
-  HAPUS
-</button>
-                </td>
-              </tr>
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">#{item.id}</TableCell>
+                <TableCell>{item.peminjaman_info || item.peminjaman_id}</TableCell>
+                <TableCell>{new Date(item.tanggal_kembali).toLocaleDateString('id-ID')}</TableCell>
+                <TableCell className="capitalize">{item.kondisi}</TableCell>
+                <TableCell>Rp {item.denda.toLocaleString('id-ID')}</TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleEdit(item)}>
+                        <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(item.id)}>
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
         {filteredPengembalian.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-gray-500 font-medium">
             Tidak ada data pengembalian yang ditemukan
           </div>
         )}
-      </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-sm text-gray-600">
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4 text-center sm:text-left">
+          <p className="text-sm text-muted-foreground">
             Menampilkan {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredPengembalian.length)} dari {filteredPengembalian.length} data
           </p>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-3 py-1 rounded border border-gray-300 text-sm disabled:opacity-40 hover:bg-gray-100"
-            >
-              &laquo; Prev
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`px-3 py-1 rounded border text-sm ${
-                  page === currentPage
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'border-gray-300 hover:bg-gray-100'
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="px-3 py-1 rounded border border-gray-300 text-sm disabled:opacity-40 hover:bg-gray-100"
-            >
-              Next &raquo;
-            </button>
-          </div>
-        </div>
-      )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+      </div>
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

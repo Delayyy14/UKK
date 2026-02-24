@@ -12,7 +12,7 @@ interface BreadcrumbProps {
 export default function Breadcrumb({ title, description, icon: Icon }: BreadcrumbProps) {
   return (
     <Card className="mb-6 print:hidden border-none shadow-none bg-transparent sm:bg-card sm:border sm:shadow-sm">
-      <CardContent className="p-6">
+      <CardContent className="p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>

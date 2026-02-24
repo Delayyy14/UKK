@@ -8,7 +8,7 @@ export function Toaster() {
   const { toasts } = useToast();
 
   return (
-    <div className="fixed top-0 right-0 p-4 w-full md:max-w-md z-[100] flex flex-col gap-2 pointer-events-none">
+    <div className="fixed top-0 right-0 p-4 w-full md:max-w-md z-[10000] flex flex-col gap-2 pointer-events-none">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} />
       ))}

@@ -4,6 +4,14 @@ import Layout from '@/components/Layout';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { Printer } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface PeminjamanDetail {
   id: number;
@@ -198,65 +206,63 @@ export default function ReportsPage() {
             {/* Tabel Detail Peminjaman */}
             <div className="mb-8">
               <h2 className="text-xl font-bold text-gray-800 mb-4">Detail Peminjaman Barang</h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full border border-gray-300">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">No</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">Peminjam</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">Alat / Barang</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">Kategori</th>
-                      <th className="border border-gray-300 px-4 py-2 text-center text-sm font-semibold text-gray-700">Jumlah</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">Tanggal Pinjam</th>
-                      <th className="border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-gray-700">Tanggal Kembali</th>
-                      <th className="border border-gray-300 px-4 py-2 text-center text-sm font-semibold text-gray-700">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {reportData.detailPeminjaman && reportData.detailPeminjaman.length > 0 ? (
-                      reportData.detailPeminjaman.map((item, index) => (
-                        <tr key={item.id} className="hover:bg-gray-50">
-                          <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">{index + 1}</td>
-                          <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">
-                            <div>
-                              <div className="font-medium">{item.peminjam_nama}</div>
-                              <div className="text-xs text-gray-500">@{item.peminjam_username}</div>
-                            </div>
-                          </td>
-                          <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">
-                            <div>
-                              <div className="font-medium">{item.alat_nama}</div>
-                              {item.alat_deskripsi && (
-                                <div className="text-xs text-gray-500">{item.alat_deskripsi.substring(0, 50)}...</div>
-                              )}
-                            </div>
-                          </td>
-                          <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">{item.kategori_nama || '-'}</td>
-                          <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700 text-center">{item.jumlah}</td>
-                          <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">{formatDate(item.tanggal_pinjam)}</td>
-                          <td className="border border-gray-300 px-4 py-2 text-sm text-gray-700">{formatDate(item.tanggal_kembali)}</td>
-                          <td className="border border-gray-300 px-4 py-2 text-sm text-center">
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              item.status === 'selesai' ? 'bg-green-100 text-green-800' :
-                              item.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                              item.status === 'disetujui' || item.status === 'sedang_dipinjam' ? 'bg-blue-100 text-blue-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
-                              {getStatusLabel(item.status)}
-                            </span>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={8} className="border border-gray-300 px-4 py-4 text-center text-sm text-gray-500">
-                          Tidak ada data peminjaman
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-100">
+                    <TableHead className="border border-gray-300 font-semibold text-gray-700">No</TableHead>
+                    <TableHead className="border border-gray-300 font-semibold text-gray-700">Peminjam</TableHead>
+                    <TableHead className="border border-gray-300 font-semibold text-gray-700">Alat / Barang</TableHead>
+                    <TableHead className="border border-gray-300 font-semibold text-gray-700">Kategori</TableHead>
+                    <TableHead className="border border-gray-300 font-semibold text-gray-700 text-center">Jumlah</TableHead>
+                    <TableHead className="border border-gray-300 font-semibold text-gray-700">Tanggal Pinjam</TableHead>
+                    <TableHead className="border border-gray-300 font-semibold text-gray-700">Tanggal Kembali</TableHead>
+                    <TableHead className="border border-gray-300 font-semibold text-gray-700 text-center">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {reportData.detailPeminjaman && reportData.detailPeminjaman.length > 0 ? (
+                    reportData.detailPeminjaman.map((item: any, index: number) => (
+                      <TableRow key={item.id} className="hover:bg-gray-50">
+                        <TableCell className="border border-gray-300 text-gray-700">{index + 1}</TableCell>
+                        <TableCell className="border border-gray-300 text-gray-700">
+                          <div>
+                            <div className="font-medium">{item.peminjam_nama}</div>
+                            <div className="text-xs text-gray-500">@{item.peminjam_username}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="border border-gray-300 text-gray-700">
+                          <div>
+                            <div className="font-medium">{item.alat_nama}</div>
+                            {item.alat_deskripsi && (
+                              <div className="text-xs text-gray-500">{item.alat_deskripsi.substring(0, 50)}...</div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="border border-gray-300 text-gray-700">{item.kategori_nama || '-'}</TableCell>
+                        <TableCell className="border border-gray-300 text-gray-700 text-center">{item.jumlah}</TableCell>
+                        <TableCell className="border border-gray-300 text-gray-700">{formatDate(item.tanggal_pinjam)}</TableCell>
+                        <TableCell className="border border-gray-300 text-gray-700">{formatDate(item.tanggal_kembali)}</TableCell>
+                        <TableCell className="border border-gray-300 text-center">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            item.status === 'selesai' ? 'bg-green-100 text-green-800' :
+                            item.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            item.status === 'disetujui' || item.status === 'sedang_dipinjam' ? 'bg-blue-100 text-blue-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {getStatusLabel(item.status)}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={8} className="h-24 text-center border border-gray-300 text-gray-500 font-medium">
+                        Tidak ada data peminjaman
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
             </div>
 
             <div className="print-footer mt-8 pt-4 border-t border-gray-300">

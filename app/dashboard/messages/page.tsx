@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import Swal from 'sweetalert2';
+import { toast } from '@/hooks/use-toast';
 
 interface Message {
   id: number;
@@ -54,16 +56,31 @@ export default function MessagesPage() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm('Apakah Anda yakin ingin menghapus pesan ini?')) {
-      fetch(`/api/messages/${id}`, {
-        method: 'DELETE',
-      })
-        .then((res) => res.json())
-        .then(() => {
-          setMessages(messages.filter((msg) => msg.id !== id));
+    Swal.fire({
+      title: 'Apakah anda yakin?',
+      text: "Pesan ini akan dihapus secara permanen!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`/api/messages/${id}`, {
+          method: 'DELETE',
         })
-        .catch((err) => console.error('Failed to delete message', err));
-    }
+          .then((res) => res.json())
+          .then(() => {
+            setMessages(messages.filter((msg) => msg.id !== id));
+            toast({ title: 'Berhasil', description: 'Pesan berhasil dihapus', variant: 'success' });
+          })
+          .catch((err) => {
+            console.error('Failed to delete message', err);
+            toast({ title: 'Error', description: 'Gagal menghapus pesan', variant: 'destructive' });
+          });
+      }
+    });
   };
 
   const handleEdit = (id: number) => {

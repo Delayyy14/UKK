@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Users, Pencil, Trash2, Plus, Search, Edit } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ImportExcel from '@/components/ImportExcel';
+import Swal from 'sweetalert2';
 import {
   Table,
   TableBody,
@@ -115,19 +116,30 @@ export default function UsersPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Yakin ingin menghapus user ini?')) return;
-
-    try {
-      const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchUsers();
-        toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
-      } else {
-        toast({ title: 'Gagal', description: 'Gagal menghapus user', variant: 'destructive' });
+    Swal.fire({
+      title: 'Apakah anda yakin?',
+      text: "Data yang dihapus tidak dapat dikembalikan!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            fetchUsers();
+            toast({ title: 'Berhasil', description: 'Data berhasil di hapus', variant: 'success' });
+          } else {
+            toast({ title: 'Gagal', description: 'Gagal menghapus user', variant: 'destructive' });
+          }
+        } catch (error) {
+          toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
+        }
       }
-    } catch (error) {
-      toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
-    }
+    });
   };
 
   if (loading) return <Layout><div className="flex justify-center p-8">Loading...</div></Layout>;
@@ -189,8 +201,7 @@ export default function UsersPage() {
         </div>
       </div>
 
-      <div className="rounded-md border bg-card">
-        <Table>
+      <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[50px]">ID</TableHead>
@@ -232,10 +243,11 @@ export default function UsersPage() {
             
           </TableBody>
         </Table>
-      </div>
 
-      <div className="flex justify-between mt-4">
-        Menampilkan {paginatedUsers.length} dari {users.length} data users.
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4 text-center sm:text-left">
+        <p className="text-sm text-muted-foreground">
+            Menampilkan {paginatedUsers.length} dari {users.length} data users.
+        </p>
       
 
       <Pagination

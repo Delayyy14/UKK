@@ -6,6 +6,14 @@ import { useEffect, useState } from 'react';
 import { Eye } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import Pagination from '@/components/Pagination';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Peminjaman {
   id: number;
@@ -172,98 +180,75 @@ export default function MonitorReturnPage() {
       <div className="print:hidden">
         <div>
           <h3 className="text-xl font-semibold mb-4">Peminjaman Aktif</h3>
-          <div className="bg-white rounded-xl shadow-lg border overflow-hidden">
-  <div className="overflow-x-auto">
-    <table className="min-w-full text-sm text-left">
-      <thead className="bg-gray-100 sticky top-0 z-10">
-        <tr className="text-gray-600 uppercase text-xs tracking-wide">
-          <th className="px-5 py-3">ID</th>
-          <th className="px-5 py-3">Peminjam</th>
-          <th className="px-5 py-3">Alat</th>
-          <th className="px-5 py-3 text-center">Jumlah</th>
-          <th className="px-5 py-3">Tgl Kembali</th>
-          <th className="px-5 py-3 text-center">Status</th>
-          <th className="px-5 py-3 text-center">Aksi</th>
-        </tr>
-      </thead>
-
-      <tbody className="divide-y">
-        {filteredActiveLoans.map((item, index) => (
-          <tr
-            key={item.id}
-            className={`${
-              index % 2 === 0 ? "bg-white" : "bg-gray-50"
-            } hover:bg-blue-50 transition`}
-          >
-            <td className="px-5 py-3 font-medium text-gray-900">#{item.id}</td>
-
-            <td className="px-5 py-3">
-              <p className="font-semibold text-gray-800">
-                {item.user_nama || item.user_id}
-              </p>
-            </td>
-
-            <td className="px-5 py-3 text-gray-700">
-              {item.alat_nama || item.alat_id}
-            </td>
-
-            <td className="px-5 py-3 text-center font-bold">{item.jumlah}</td>
-
-            <td className="px-5 py-3 text-gray-600">
-              {item.tanggal_kembali
-                ? new Date(item.tanggal_kembali).toLocaleDateString("id-ID")
-                : "-"}
-            </td>
-
-            {/* STATUS */}
-            <td className="px-5 py-3 text-center">
-              <span
-                className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                  item.status === "disetujui"
-                    ? "bg-green-100 text-green-700"
-                    : item.status === "sedang_dipinjam"
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-200 text-gray-700"
-                }`}
-              >
-                {item.status === "disetujui"
-                  ? "Disetujui"
-                  : item.status === "sedang_dipinjam"
-                  ? "Sedang Dipinjam"
-                  : item.status}
-              </span>
-            </td>
-
-            {/* AKSI */}
-            <td className="px-5 py-3 flex justify-center gap-2">
-              <button
-                onClick={() => handleReturn(item)}
-                className="px-3 py-1.5 text-xs bg-green-600 text-white rounded-md hover:bg-green-700 transition shadow"
-              >
-                Konfirmasi
-              </button>
-
-              <button
-                onClick={() => handlePrint(item)}
-                className="px-3 py-1.5 text-xs bg-gray-700 text-white rounded-md hover:bg-gray-800 transition shadow"
-              >
-                Print
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50">
+                <TableHead className="w-[80px]">ID</TableHead>
+                <TableHead>Peminjam</TableHead>
+                <TableHead>Alat</TableHead>
+                <TableHead className="text-center">Jumlah</TableHead>
+                <TableHead>Tgl Kembali</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="text-center">Aksi</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredActiveLoans.map((item) => (
+                <TableRow key={item.id} className="hover:bg-muted/30 transition-colors">
+                  <TableCell className="font-semibold text-primary">#{item.id}</TableCell>
+                  <TableCell className="font-medium">{item.user_nama || item.user_id}</TableCell>
+                  <TableCell className="text-muted-foreground">{item.alat_nama || item.alat_id}</TableCell>
+                  <TableCell className="text-center font-bold">{item.jumlah}</TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {item.tanggal_kembali
+                      ? new Date(item.tanggal_kembali).toLocaleDateString("id-ID")
+                      : "-"}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <span
+                      className={`px-3 py-1 text-xs font-semibold rounded-full border ${
+                        item.status === "disetujui"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : item.status === "sedang_dipinjam"
+                          ? "bg-sky-50 text-sky-700 border-sky-200"
+                          : "bg-gray-100 text-gray-700 border-gray-200"
+                      }`}
+                    >
+                      {item.status === "disetujui"
+                        ? "Disetujui"
+                        : item.status === "sedang_dipinjam"
+                        ? "Sedang Dipinjam"
+                        : item.status}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex justify-center gap-2">
+                      <button
+                        onClick={() => handleReturn(item)}
+                        className="px-3 py-1.5 text-xs font-medium bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition shadow-sm"
+                      >
+                        Konfirmasi
+                      </button>
+                      <button
+                        onClick={() => handlePrint(item)}
+                        className="px-3 py-1.5 text-xs font-medium bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition shadow-sm"
+                      >
+                        Print
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
 
   {filteredActiveLoans.length === 0 && (
     <div className="text-center py-10 text-gray-500">
       Tidak ada data peminjaman aktif
     </div>
   )}
-</div>
-</div>
-</div>
+      </div>
+    </div>
         
 
       {/* Modal Konfirmasi Pengembalian */}
@@ -411,8 +396,10 @@ export default function MonitorReturnPage() {
   </div>
   </div>
 )}
-    <div className="flex justify-between mt-4 block print:hidden ">
-            Menampilkan {paginatedActiveLoans.length} dari {activeLoans.length} data users.
+    <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4 text-center sm:text-left block print:hidden ">
+            <span className="text-sm text-muted-foreground">
+              Menampilkan {paginatedActiveLoans.length} dari {activeLoans.length} data peminjaman.
+            </span>
           
     
           <Pagination

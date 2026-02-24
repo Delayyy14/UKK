@@ -41,11 +41,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-muted/20">
+    <div className="flex min-h-screen bg-muted/20 overflow-x-hidden">
       <Sidebar userRole={user.role} />
-      <div className="md:ml-64 flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out">
+      <div className="md:ml-64 flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out min-w-0">
         <Navbar userName={user.nama} userRole={user.role} userFoto={user.foto} />
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 md:p-8 w-full max-w-full">
           {children}
         </main>
       </div>
