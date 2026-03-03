@@ -245,7 +245,7 @@ export default function MessagesPage() {
                       </TableCell>
                       <TableCell>
                         {msg.status === 'replied' ? (
-                          <Badge variant="success" className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Terbalas</Badge>
+                          <Badge variant="outline" className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Terbalas</Badge>
                         ) : msg.status === 'read' ? (
                           <Badge variant="outline" className="bg-blue-50 text-blue-600 border-blue-100">Sudah Dibaca</Badge>
                         ) : (
