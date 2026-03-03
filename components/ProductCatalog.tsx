@@ -23,6 +23,8 @@ import {
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
+import Pagination from '@/components/Pagination';
+import EmptyState from '@/components/EmptyState';
 
 interface Product {
   id: number;
@@ -53,6 +55,8 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 8;
 
   // Derive filtered products
   const filteredProducts = products.filter((product) => {
@@ -71,9 +75,19 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
   const clearFilters = () => {
     setCategoryFilter('all');
     setStatusFilter('all');
+    setSearch('');
+    setCurrentPage(1);
     setIsDialogOpen(false);
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const hasNoData = products.length === 0;
   const activeFiltersCount = (categoryFilter !== 'all' ? 1 : 0) + (statusFilter !== 'all' ? 1 : 0);
 
   return (
@@ -87,7 +101,7 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
             placeholder="Cari nama alat atau deskripsi..." 
             className="pl-9"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
           />
         </div>
         
@@ -113,7 +127,7 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="category">Kategori</Label>
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <Select value={categoryFilter} onValueChange={(val) => { setCategoryFilter(val); setCurrentPage(1); }}>
                   <SelectTrigger id="category">
                     <SelectValue placeholder="Pilih Kategori" />
                   </SelectTrigger>
@@ -129,7 +143,7 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">Status Ketersediaan</Label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <Select value={statusFilter} onValueChange={(val) => { setStatusFilter(val); setCurrentPage(1); }}>
                   <SelectTrigger id="status">
                     <SelectValue placeholder="Pilih Status" />
                   </SelectTrigger>
@@ -141,7 +155,7 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
                 </Select>
               </div>
             </div>
-            <DialogFooter className="flex-col sm:flex-row gap-2">
+            <DialogFooter className="flex-col sm:flex-row gap-2 text-center sm:text-left">
               <Button variant="ghost" onClick={clearFilters} className="w-full sm:w-auto">
                 Reset Filter
               </Button>
@@ -157,20 +171,20 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
        {activeFiltersCount > 0 && (
         <div className="flex gap-2 flex-wrap text-sm">
           {categoryFilter !== 'all' && (
-            <Badge variant="secondary" className="gap-1 animate-in fade-in zoom-in duration-300">
+            <Badge variant="secondary" className="gap-1">
               Kategori: {categoryFilter}
               <X 
                 className="h-3 w-3 cursor-pointer hover:text-destructive transition-colors" 
-                onClick={() => setCategoryFilter('all')}
+                onClick={() => { setCategoryFilter('all'); setCurrentPage(1); }}
               />
             </Badge>
           )}
           {statusFilter !== 'all' && (
-            <Badge variant="secondary" className="gap-1 animate-in fade-in zoom-in duration-300">
+            <Badge variant="secondary" className="gap-1">
               Status: {statusFilter === 'tersedia' ? 'Tersedia' : 'Habis'}
               <X 
                 className="h-3 w-3 cursor-pointer hover:text-destructive transition-colors" 
-                onClick={() => setStatusFilter('all')}
+                onClick={() => { setStatusFilter('all'); setCurrentPage(1); }}
               />
             </Badge>
           )}
@@ -186,25 +200,38 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
       )}
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((item) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {paginatedProducts.length > 0 ? (
+          paginatedProducts.map((item) => (
             <ProductCard key={item.id} item={item} />
           ))
         ) : (
-          <div className="col-span-full flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in duration-500">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4 text-muted-foreground">
-               <Search className="h-8 w-8" />
-            </div>
-            <h3 className="text-lg font-semibold">Tidak ditemukan</h3>
-            <p className="text-muted-foreground max-w-sm mx-auto mt-2">
-              Maaf, tidak ada alat yang cocok dengan pencarian atau filter Anda. Coba kata kunci lain atau reset filter.
-            </p>
-            <Button variant="outline" onClick={clearFilters} className="mt-6">
-              Lihat Semua Produk
-            </Button>
+          <div className="col-span-full">
+            <EmptyState type={hasNoData ? "data" : "search"} />
+            {!hasNoData && (
+              <div className="flex justify-center mt-4">
+                <Button variant="outline" onClick={clearFilters}>
+                  Lihat Semua Produk
+                </Button>
+              </div>
+            )}
           </div>
         )}
+      </div>
+
+      {/* Pagination component */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-12 gap-4">
+        <p className="text-sm text-muted-foreground">
+          Menampilkan {paginatedProducts.length} dari {filteredProducts.length} produk
+        </p>
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => {
+            setCurrentPage(page);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
       </div>
     </div>
   );

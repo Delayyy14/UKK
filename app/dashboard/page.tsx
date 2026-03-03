@@ -54,6 +54,7 @@ interface DashboardData {
   recentPeminjaman?: any[];
   recentActivity?: any[];
   recentPengembalian?: any[];
+  topOrderedAlat?: any[];
   charts?: {
     monthlyPeminjaman?: { name: string; total: number }[];
     peminjamanByStatus?: { name: string; value: number }[];
@@ -168,7 +169,7 @@ export default function DashboardPage() {
           description="Ringkasan lengkap sistem. Pantau semua aktivitas, statistik, dan data penting dalam satu tampilan."
           icon={LayoutDashboard}
         />
-        
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         </div>
@@ -284,32 +285,39 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Recent Activity */}
+          {/* Top Ordered Alat */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Activity size={20} className="text-green-600" />
-                Aktivitas Terbaru
+                <TrendingUp size={20} className="text-orange-600" />
+                Top Barang yang Dipesan
               </CardTitle>
             </CardHeader>
             <CardContent>
                <div className="space-y-4">
-              {data.recentActivity && data.recentActivity.length > 0 ? (
-                data.recentActivity.map((item: any, index: number) => (
-                  <div key={index} className="flex items-start gap-4 pb-4 border-b last:border-0 last:pb-0">
-                    <div className="mt-1 bg-blue-100 dark:bg-blue-900/20 p-2 rounded-full">
-                      <Activity size={16} className="text-blue-600 dark:text-blue-400" />
+              {data.topOrderedAlat && data.topOrderedAlat.length > 0 ? (
+                data.topOrderedAlat.map((item: any, index: number) => (
+                  <div key={index} className="flex items-center gap-4 pb-4 border-b last:border-0 last:pb-0">
+                    <div className="w-12 h-12 bg-gray-50 rounded-lg overflow-hidden border shrink-0">
+                        {item.foto ? (
+                            <img src={item.foto} alt={item.nama} className="w-full h-full object-cover" />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                <Package size={20} />
+                            </div>
+                        )}
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium leading-none">{item.action}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {item.user_nama || 'System'} • {formatDate(item.created_at)}
-                      </p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold truncate">{item.nama}</p>
+                      <p className="text-xs text-muted-foreground">Total: {item.total_ordered} Unit</p>
                     </div>
+                    <Badge variant="secondary" className="bg-orange-50 text-orange-600 border-orange-100">
+                        Top {index + 1}
+                    </Badge>
                   </div>
                 ))
               ) : (
-                <p className="text-center text-muted-foreground py-4">Tidak ada aktivitas</p>
+                <p className="text-center text-muted-foreground py-4">Belum ada pemesanan</p>
               )}
             </div>
             </CardContent>
@@ -328,7 +336,52 @@ export default function DashboardPage() {
           description="Ringkasan peminjaman dan pengembalian. Kelola persetujuan peminjaman dan pantau pengembalian alat."
           icon={LayoutDashboard}
         />
-        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <Card className="hover:shadow-md transition-all border-l-4 border-l-yellow-500">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Pending</CardTitle>
+              <Clock className="w-4 h-4 text-yellow-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.stats.pendingPeminjaman}</div>
+              <p className="text-xs text-muted-foreground">Menunggu persetujuan</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-all border-l-4 border-l-blue-500">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Pinjaman Aktif</CardTitle>
+              <ClipboardList className="w-4 h-4 text-blue-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.stats.peminjamanAktif}</div>
+              <p className="text-xs text-muted-foreground">Sedang dipinjam/ACC</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-all border-l-4 border-l-green-500">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Total Selesai</CardTitle>
+              <CheckCircle className="w-4 h-4 text-green-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.stats.totalPengembalian}</div>
+              <p className="text-xs text-muted-foreground">Barang dikembalikan</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-all border-l-4 border-l-rose-500">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Ditolak</CardTitle>
+              <XCircle className="w-4 h-4 text-rose-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.stats.ditolak}</div>
+              <p className="text-xs text-muted-foreground">Permintaan tidak disetujui</p>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Charts Section */}
         <div className="grid grid-cols-1 mb-6">
           <Card>
@@ -478,7 +531,60 @@ export default function DashboardPage() {
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
-    
+          <Card className="hover:shadow-md transition-all">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Total Pinjam</CardTitle>
+              <ClipboardList className="w-4 h-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.stats.totalPeminjaman}</div>
+              <p className="text-xs text-muted-foreground">Riwayat pinjaman Anda</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-all">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium text-yellow-600">Pending</CardTitle>
+              <Clock className="w-4 h-4 text-yellow-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-yellow-600">{data.stats.pendingPeminjaman}</div>
+              <p className="text-xs text-muted-foreground">Menunggu konfirmasi</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-all">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium text-blue-600">Sedang Pinjam</CardTitle>
+              <Package className="w-4 h-4 text-blue-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-blue-600">{data.stats.peminjamanAktif}</div>
+              <p className="text-xs text-muted-foreground">Barang yang Anda bawa</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-all">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium text-green-600">Selesai</CardTitle>
+              <CheckCircle className="w-4 h-4 text-green-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">{data.stats.selesai}</div>
+              <p className="text-xs text-muted-foreground">Sudah dikembalikan</p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-all bg-primary/5 border-primary/20">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Alat Tersedia</CardTitle>
+              <Wrench className="w-4 h-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-primary">{data.stats.alatTersedia}</div>
+              <p className="text-xs text-muted-foreground">Siap untuk dipinjam</p>
+            </CardContent>
+          </Card>
       </div>
 
       {/* Charts Section */}

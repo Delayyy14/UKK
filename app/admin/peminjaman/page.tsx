@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { ClipboardList, CheckCircle, XCircle, Package, User, Calendar, Search } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import Swal from 'sweetalert2';
+import React from 'react';
 import {
   Card,
   CardContent,
@@ -35,6 +36,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import Pagination from '@/components/Pagination';
+import EmptyState from '@/components/EmptyState';
 
 interface Peminjaman {
   id: number;
@@ -52,6 +54,7 @@ interface Peminjaman {
   tanggal_kembali: string;
   status: string;
   alasan: string;
+  kode_peminjaman?: string;
   created_at?: string;
 }
 
@@ -75,6 +78,7 @@ export default function PeminjamanPage() {
     tanggal_kembali: '',
     status: 'pending',
     alasan: '',
+    kode_peminjaman: '',
   });
 
   useEffect(() => {
@@ -148,6 +152,7 @@ export default function PeminjamanPage() {
           tanggal_kembali: '',
           status: 'pending',
           alasan: '',
+          kode_peminjaman: '',
         });
         fetchPeminjaman();
         toast({ title: 'Berhasil', description: 'Data berhasil di simpan', variant: 'success' });
@@ -264,6 +269,8 @@ export default function PeminjamanPage() {
     setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const hasNoData = peminjaman.length === 0;
+
   return (
     <Layout>
       <Breadcrumb
@@ -302,25 +309,27 @@ export default function PeminjamanPage() {
             </div>
         </div>
 
-        {/* Button */}
-        <Button onClick={() => {
-            setFormData({
-                user_id: '',
-                alat_id: '',
-                jumlah: 1,
-                tanggal_pinjam: '',
-                tanggal_kembali: '',
-                status: 'pending',
-                alasan: '',
-            });
-            setShowDialog(true);
-        }}>
-            Tambah Peminjaman
-        </Button>
+        <div className="flex gap-2">
+            <Button onClick={() => {
+                setFormData({
+                    user_id: '',
+                    alat_id: '',
+                    jumlah: 1,
+                    tanggal_pinjam: '',
+                    tanggal_kembali: '',
+                    status: 'pending',
+                    alasan: '',
+                    kode_peminjaman: '',
+                });
+                setShowDialog(true);
+            }}>
+                Tambah Peminjaman
+            </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
-        {paginatedGroups.map((group) => (
+        {paginatedGroups.length > 0 ? paginatedGroups.map((group) => (
           <div
             key={group.user_id}
             className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col hover:border-primary/30 transition-all duration-300"
@@ -423,7 +432,7 @@ export default function PeminjamanPage() {
 
                       {/* Detail Section (Expandable) */}
                       {expandedItems[item.id] && (
-                        <div className="mb-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="mb-4 space-y-3">
                           <div className="bg-slate-50/80 p-2.5 rounded-lg border border-slate-200/50 text-left">
                             <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest mb-1">Keterangan Alat</p>
                             <p className="text-[11px] text-gray-600 leading-relaxed font-medium">
@@ -451,6 +460,13 @@ export default function PeminjamanPage() {
                         </div>
                       )}
 
+                      <div className="flex justify-between items-center mt-3 pt-3 border-t border-gray-50">
+                         <div className="flex flex-col">
+                            <span className="text-[8px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Kode Transaksi</span>
+                            <span className="text-[10px] font-mono font-bold text-gray-600">{item.kode_peminjaman || '-'}</span>
+                         </div>
+                      </div>
+
                       {item.status === 'pending' && (
                         <div className="flex gap-2 mt-auto pt-2">
                           <button
@@ -474,16 +490,13 @@ export default function PeminjamanPage() {
               ))}
             </div>
           </div>
-        ))}
+        )) : (
+          <div className="lg:col-span-2 2xl:col-span-3">
+             <EmptyState type={hasNoData ? "data" : "search"} />
+          </div>
+        )}
       </div>
       
-      {groupedList.length === 0 && (
-          <div className="text-center py-20 bg-muted/20 rounded-xl border-2 border-dashed">
-            <Package size={48} className="mx-auto text-muted-foreground/30 mb-4" />
-            <p className="text-muted-foreground font-medium">Tidak ada data peminjaman</p>
-          </div>
-      )}
-
       <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
             <span className="text-sm text-muted-foreground">
                 Menampilkan <span className="font-bold text-foreground">{paginatedGroups.length}</span> user dari <span className="font-bold text-foreground">{groupedList.length}</span> total permintaan.
@@ -614,6 +627,7 @@ export default function PeminjamanPage() {
           </form>
         </DialogContent>
       </Dialog>
+
     </Layout>
   );
 }

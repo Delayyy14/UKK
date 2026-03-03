@@ -31,9 +31,12 @@ async function migrate() {
 
         console.log('Running migration...');
         await client.query(`
-      ALTER TABLE alat ADD COLUMN IF NOT EXISTS harga_per_hari DECIMAL(10, 2) DEFAULT 0;
-      ALTER TABLE peminjaman ADD COLUMN IF NOT EXISTS total_harga DECIMAL(12, 2) DEFAULT 0;
-    `);
+          ALTER TABLE alat ADD COLUMN IF NOT EXISTS harga_per_hari DECIMAL(10, 2) DEFAULT 0;
+          ALTER TABLE alat ADD COLUMN IF NOT EXISTS barcode VARCHAR(255) UNIQUE;
+          ALTER TABLE peminjaman ADD COLUMN IF NOT EXISTS total_harga DECIMAL(12, 2) DEFAULT 0;
+          ALTER TABLE peminjaman ADD COLUMN IF NOT EXISTS kode_peminjaman VARCHAR(255) UNIQUE;
+          ALTER TABLE peminjaman ADD COLUMN IF NOT EXISTS tanggal_pengembalian DATE;
+        `);
 
         console.log('Migration successful');
         client.release();

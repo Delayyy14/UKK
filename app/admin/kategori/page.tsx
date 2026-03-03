@@ -8,6 +8,7 @@ import { toast } from '@/hooks/use-toast';
 import ImportExcel from '@/components/ImportExcel';
 import Swal from 'sweetalert2';
 import Pagination from '@/components/Pagination';
+import EmptyState from '@/components/EmptyState';
 import {
   Table,
   TableBody,
@@ -142,6 +143,8 @@ export default function KategoriPage() {
     currentPage * ITEMS_PER_PAGE
   );
 
+  const hasNoData = kategori.length === 0;
+
   return (
     <Layout>
       <Breadcrumb
@@ -215,8 +218,8 @@ export default function KategoriPage() {
                   ))
             ) : (
                 <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
-                        Tidak ada kategori.
+                    <TableCell colSpan={4} className="h-24 text-center p-0 border-none hover:bg-transparent">
+                        <EmptyState type={hasNoData ? "data" : "search"} />
                     </TableCell>
                 </TableRow>
             )}
@@ -225,10 +228,9 @@ export default function KategoriPage() {
 
       <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4 text-center sm:text-left">
             <span className="text-sm text-muted-foreground">
-              Menampilkan {paginatedKategori.length} dari {kategori.length} data kategori.
+              Menampilkan {paginatedKategori.length} dari {filteredKategori.length} data kategori.
             </span>
             
-      
             <Pagination
                currentPage={currentPage}
                totalPages={totalPages}

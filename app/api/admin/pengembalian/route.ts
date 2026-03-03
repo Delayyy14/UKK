@@ -42,6 +42,19 @@ export async function POST(request: NextRequest) {
 
     const peminjaman = peminjamanResult.rows[0];
 
+    // Auto-calculate denda if not provided
+    let calculatedDenda = denda || 0;
+    if (calculatedDenda === 0) {
+      const deadline = new Date(peminjaman.tanggal_kembali);
+      const returnDate = new Date(tanggal_kembali);
+      if (returnDate > deadline) {
+        const diffTime = Math.abs(returnDate.getTime() - deadline.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        // Example fine: 5000 per day late
+        calculatedDenda = diffDays * 5000;
+      }
+    }
+
     if (peminjaman.status === 'selesai') {
       return NextResponse.json(
         { error: 'Alat sudah dikembalikan' },
@@ -53,8 +66,9 @@ export async function POST(request: NextRequest) {
       `INSERT INTO pengembalian (peminjaman_id, tanggal_kembali, kondisi, catatan, denda) 
        VALUES ($1, $2, $3, $4, $5) 
        RETURNING *`,
-      [peminjaman_id, tanggal_kembali, kondisi || 'baik', catatan || null, denda || 0]
+      [peminjaman_id, tanggal_kembali, kondisi || 'baik', catatan || null, calculatedDenda]
     );
+
 
     const pengembalian = result.rows[0];
     const userId = request.headers.get('authorization')?.replace('Bearer ', '') || null;

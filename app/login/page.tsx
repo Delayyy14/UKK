@@ -38,8 +38,18 @@ export default function LoginPage() {
         toast({ title: 'Berhasil', description: 'Selamat datang! Login berhasil.', variant: 'success' });
         router.push('/dashboard');
       } else {
+        if (data.requireVerification) {
+          toast({ 
+            title: 'Verifikasi Diperlukan', 
+            description: 'Email Anda belum diverifikasi. Mengalihkan ke halaman verifikasi...', 
+            variant: 'default' 
+          });
+          router.push(`/register?step=verify&email=${encodeURIComponent(data.email)}`);
+          return;
+        }
         setError(data.error || 'Login gagal');
       }
+
     } catch (err) {
       setError('Terjadi kesalahan saat login');
       toast({ title: 'Error', description: 'Terjadi kesalahan sistem', variant: 'destructive' });
@@ -138,7 +148,7 @@ export default function LoginPage() {
 
           {/* Register Link */}
           <div className="text-center text-sm">
-            <span className="text-muted-foreground">Belum punya akun peminjam? </span>
+            <span className="text-muted-foreground">Belum punya akun? </span>
             <Link href="/register" className="font-medium text-primary hover:underline">
               Daftar di sini
             </Link>

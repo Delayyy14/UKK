@@ -7,6 +7,7 @@ import { Users, Pencil, Trash2, Plus, Search, Edit } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import ImportExcel from '@/components/ImportExcel';
 import Swal from 'sweetalert2';
+import EmptyState from '@/components/EmptyState';
 import {
   Table,
   TableBody,
@@ -158,6 +159,8 @@ export default function UsersPage() {
     currentPage * ITEMS_PER_PAGE
   );
 
+  const hasNoData = users.length === 0;
+
   return (
     <Layout>
       <Breadcrumb
@@ -235,8 +238,8 @@ export default function UsersPage() {
                   ))
             ) : (
                 <TableRow>
-                    <TableCell colSpan={6} className="h-24 text-center">
-                        Tidak ada data users.
+                    <TableCell colSpan={6} className="h-24 text-center p-0 border-none hover:bg-transparent">
+                        <EmptyState type={hasNoData ? "data" : "search"} />
                     </TableCell>
                 </TableRow>
             )}
@@ -246,7 +249,7 @@ export default function UsersPage() {
 
       <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4 text-center sm:text-left">
         <p className="text-sm text-muted-foreground">
-            Menampilkan {paginatedUsers.length} dari {users.length} data users.
+            Menampilkan {paginatedUsers.length} dari {filteredUsers.length} data users.
         </p>
       
 

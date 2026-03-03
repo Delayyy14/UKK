@@ -13,6 +13,15 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- News Categories table
+CREATE TABLE IF NOT EXISTS kategori_berita (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(255) NOT NULL,
+    deskripsi TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Categories table
 CREATE TABLE IF NOT EXISTS kategori (
     id SERIAL PRIMARY KEY,
@@ -33,6 +42,7 @@ CREATE TABLE IF NOT EXISTS alat (
     status VARCHAR(20) DEFAULT 'tersedia' CHECK (status IN ('tersedia', 'tidak_tersedia', 'rusak')),
     foto VARCHAR(500),
     harga_per_hari DECIMAL(10, 2) DEFAULT 0,
+    barcode VARCHAR(255) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -51,6 +61,7 @@ CREATE TABLE IF NOT EXISTS peminjaman (
     catatan TEXT,
     approved_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
     total_harga DECIMAL(12, 2) DEFAULT 0,
+    kode_peminjaman VARCHAR(255) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -89,6 +100,29 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- FAQ table
+CREATE TABLE IF NOT EXISTS faq (
+    id SERIAL PRIMARY KEY,
+    pertanyaan TEXT NOT NULL,
+    jawaban TEXT NOT NULL,
+    urutan INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Berita table
+CREATE TABLE IF NOT EXISTS berita (
+    id SERIAL PRIMARY KEY,
+    judul VARCHAR(255) NOT NULL,
+    konten TEXT NOT NULL,
+    foto VARCHAR(500),
+    penulis VARCHAR(255),
+    slug VARCHAR(255) UNIQUE,
+    kategori_id INTEGER REFERENCES kategori_berita(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_alat_kategori ON alat(kategori_id);
@@ -99,6 +133,7 @@ CREATE INDEX IF NOT EXISTS idx_peminjaman_status ON peminjaman(status);
 CREATE INDEX IF NOT EXISTS idx_activity_log_user ON activity_log(user_id);
 CREATE INDEX IF NOT EXISTS idx_activity_log_created ON activity_log(created_at);
 CREATE INDEX IF NOT EXISTS idx_contact_messages_created ON contact_messages(created_at);
+CREATE INDEX IF NOT EXISTS idx_berita_kategori ON berita(kategori_id);
 
 -- Insert default admin user (password: admin123)
 -- Note: Run scripts/setup-default-users.js to set proper password hashes

@@ -9,6 +9,7 @@ export interface User {
   email: string;
   foto?: string;
   role: 'admin' | 'petugas' | 'peminjam';
+  is_verified: boolean;
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -21,7 +22,7 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 
 export async function getUserByUsername(username: string): Promise<User | null> {
   const result = await pool.query(
-    'SELECT id, username, nama, email, foto, role FROM users WHERE username = $1',
+    'SELECT id, username, nama, email, foto, role, is_verified FROM users WHERE username = $1',
     [username]
   );
   return result.rows[0] || null;
@@ -29,7 +30,7 @@ export async function getUserByUsername(username: string): Promise<User | null> 
 
 export async function verifyUser(username: string, password: string): Promise<User | null> {
   const result = await pool.query(
-    'SELECT id, username, password, nama, email, foto, role FROM users WHERE username = $1',
+    'SELECT id, username, password, nama, email, foto, role, is_verified FROM users WHERE username = $1',
     [username]
   );
 
@@ -51,5 +52,6 @@ export async function verifyUser(username: string, password: string): Promise<Us
     email: user.email,
     foto: user.foto,
     role: user.role,
+    is_verified: !!user.is_verified,
   };
 }

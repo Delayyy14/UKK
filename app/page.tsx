@@ -3,11 +3,12 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, CheckCircle, Clock, Shield, MapPin, Users, Package, Calendar, Heart } from 'lucide-react';
+import { ArrowRight, CheckCircle, Clock, Shield, MapPin, Users, Package, Calendar, Heart, Newspaper } from 'lucide-react';
 import pool from '@/lib/db';
 import ProductCard from '@/components/ProductCard';
 import ContactSection from '@/components/ContactSection';
 import TestimonialSection from '@/components/TestimonialSection';
+import BeritaCard from '@/components/BeritaCard';
 
 async function getFeaturedProducts() {
   try {
@@ -26,10 +27,27 @@ async function getFeaturedProducts() {
   }
 }
 
+async function getLatestNews() {
+  try {
+    const res = await pool.query(`
+      SELECT * FROM berita 
+      ORDER BY created_at DESC 
+      LIMIT 3
+    `);
+    return res.rows;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
 export const dynamic = 'force-dynamic';
 
 export default async function LandingPage() {
-  const products = await getFeaturedProducts();
+  const [products, news] = await Promise.all([
+    getFeaturedProducts(),
+    getLatestNews()
+  ]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
@@ -52,7 +70,7 @@ export default async function LandingPage() {
 
             <h1 className="text-5xl md:text-7xl lg:text-7xl font-serif font-medium tracking-tight text-gray-900 leading-[1.1]">
               Eksplorasi Alam Tanpa <br className="hidden lg:block"/>
-              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">Batas & Kendala</span>
+              <span className="italic text-transparent bg-clip-text bg-blue-600">Batas & Kendala</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-xl font-light leading-relaxed">
               Lengkapi petualanganmu dengan peralatan pendakian kualitas premium. 
@@ -121,7 +139,6 @@ export default async function LandingPage() {
       {/* Features Section */}
       <section id="features" className="relative py-24 px-6 md:px-12 lg:px-24">
         <div className="text-center mb-16 relative z-10">
-          <Badge variant="outline" className="mb-4 text-blue-600 border-blue-200 bg-blue-50 px-4 py-1">Layanan Unggulan</Badge>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-gray-900">Mengapa Harus Di Sini?</h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto italic font-light">Kami memahami setiap langkah pendakianmu berharga.</p>
         </div>
@@ -227,11 +244,12 @@ export default async function LandingPage() {
 
       {/* Product Preview Section */}
       <section className="relative py-32 px-6 md:px-12 lg:px-24 bg-white">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 max-w-7xl mx-auto gap-4">
+        <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-16 max-w-7xl mx-auto gap-4">
           <div className="space-y-2">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">Peralatan Pilihan</h2>
             <p className="text-gray-500 text-lg font-light tracking-wide italic">"Quality tools for quality hike."</p>
           </div>
+
           <Button size="lg" variant="ghost" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 group font-bold">
             <Link href="/products" className="flex items-center">
               Lihat Semua Katalog <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
@@ -256,31 +274,40 @@ export default async function LandingPage() {
         </div>
       </section>
 
+{/* News Preview Section */}
+      <section className="relative py-32 px-6 md:px-12 lg:px-24 bg-gray-50/30">
+        <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-16 max-w-7xl mx-auto gap-4">
+          <div className="space-y-2">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">Berita Terbaru</h2>
+            <p className="text-gray-500 text-lg font-light tracking-wide italic">"Stay updated with our latest stories."</p>
+          </div>
+
+          <Button size="lg" variant="ghost" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 group font-bold">
+            <Link href="/berita" className="flex items-center">
+              Lihat Semua Berita <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {news.length > 0 ? (
+            news.map((item: any) => (
+              <BeritaCard key={item.id} item={item} />
+            ))
+          ) : (
+             <div className="col-span-3 text-center py-20 rounded-[40px] bg-gray-50 border border-dashed border-gray-200">
+                <Newspaper size={48} className="mx-auto opacity-10 mb-4" />
+                <p className="text-gray-400 font-medium italic">Belum ada berita terbaru saat ini.</p>
+             </div>
+          )}
+        </div>
+      </section>
+
       {/* Testimonial Section */}
       <TestimonialSection />
 
-      {/* Final CTA Section */}
-      <section className="py-24 px-6 md:px-12 lg:px-24 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-           <div className="bg-gray-900 rounded-[60px] p-10 md:p-20 relative overflow-hidden text-center space-y-8">
-              {/* Background Glow */}
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 blur-[100px] rounded-full -mr-64 -mt-64" />
-              <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-600/20 blur-[100px] rounded-full -ml-32 -mb-32" />
 
-              <h2 className="text-4xl md:text-6xl font-bold text-white relative z-10 leading-tight">
-                Siap Melakukan <br className="hidden md:block"/> Petualangan Selanjutnya?
-              </h2>
-              <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto relative z-10 font-light">
-                Dapatkan promo diskon member 10% untuk setiap peminjaman alat pertamamu. Bergabunglah bersama ratusan pendaki lainnya.
-              </p>
-              <div className="pt-4 relative z-10">
-                <Button size="lg" className="rounded-full px-12 h-16 text-xl bg-blue-600 text-white hover:bg-blue-500 shadow-2xl shadow-blue-600/30 hover:-translate-y-1 transition-all" asChild>
-                  <Link href="/register">Buat Akun Sekarang</Link>
-                </Button>
-              </div>
-           </div>
-        </div>
-      </section>
+      
 
       {/* Contact Section */}
       <ContactSection />

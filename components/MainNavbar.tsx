@@ -41,11 +41,17 @@ export default function MainNavbar() {
           <Link href="/products" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Katalog
           </Link>
+          <Link href="/berita" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            Berita
+          </Link>
           <Link href="/aboutus" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Tentang Kami
           </Link>
           <Link href="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Kontak
+          </Link>
+          <Link href="/faq" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            FAQ
           </Link>
         </div>
 
@@ -97,8 +103,14 @@ export default function MainNavbar() {
                 <Link href="/products" className="text-sm font-medium hover:text-primary">
                   Katalog
                 </Link>
+                <Link href="/berita" className="text-sm font-medium hover:text-primary">
+                  Berita
+                </Link>
                 <Link href="/aboutus" className="text-sm font-medium hover:text-primary">
                   Tentang Kami
+                </Link>
+                <Link href="/faq" className="text-sm font-medium hover:text-primary">
+                  FAQ
                 </Link>
 
                 <hr className="border-muted" />

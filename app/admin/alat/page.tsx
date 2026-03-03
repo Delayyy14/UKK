@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import Pagination from '@/components/Pagination';
+import EmptyState from '@/components/EmptyState';
 
 interface Kategori {
   id: number;
@@ -246,6 +247,8 @@ export default function AlatPage() {
     currentPage * ITEMS_PER_PAGE
   );
 
+  const hasNoData = alat.length === 0;
+
   return (
     <Layout>
       <Breadcrumb
@@ -361,21 +364,23 @@ export default function AlatPage() {
                   ))
             ) : (
                 <TableRow>
-                    <TableCell colSpan={8} className="h-24 text-center">
-                        Tidak ada data.
+                    <TableCell colSpan={9} className="h-24 text-center p-0 border-none hover:bg-transparent">
+                        {hasNoData ? (
+                            <EmptyState type="data" />
+                        ) : (
+                            <EmptyState type="search" />
+                        )}
                     </TableCell>
                 </TableRow>
             )}
-            
           </TableBody>
         </Table>
 
       <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4 text-center sm:text-left">
             <span className="text-sm text-muted-foreground">
-              Menampilkan {paginatedAlat.length} dari {alat.length} data alat.
+              Menampilkan {paginatedAlat.length} dari {filteredAlat.length} data alat.
             </span>
             
-      
             <Pagination
                currentPage={currentPage}
                totalPages={totalPages}

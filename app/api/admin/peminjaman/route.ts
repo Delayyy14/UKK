@@ -25,15 +25,18 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, status, alasan } = await request.json();
+    const { user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, status, alasan, kode_peminjaman } = await request.json();
+    const kode = kode_peminjaman || `PMJ-${Date.now()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+
     const result = await pool.query(
-      `INSERT INTO peminjaman (user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, status, alasan, created_at, updated_at) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+      `INSERT INTO peminjaman (user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, status, alasan, created_at, updated_at, kode_peminjaman) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
        RETURNING *`,
-      [user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali || null, status || 'pending', alasan || null, new Date(), new Date()]
+      [user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali || null, status || 'pending', alasan || null, new Date(), new Date(), kode]
     );
 
     const peminjaman = result.rows[0];
+
     const userId = request.headers.get('authorization')?.replace('Bearer ', '') || null;
 
     await logActivity(

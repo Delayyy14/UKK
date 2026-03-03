@@ -28,7 +28,8 @@ export async function GET(request: NextRequest) {
         recentPeminjamanResult,
         recentActivityResult,
         monthlyPeminjamanResult,
-        peminjamanByStatusResult
+        peminjamanByStatusResult,
+        topOrderedAlatResult
       ] = await Promise.all([
         pool.query('SELECT COUNT(*) FROM users'),
         pool.query('SELECT COUNT(*) FROM alat'),
@@ -62,6 +63,14 @@ export async function GET(request: NextRequest) {
         `),
         pool.query(`
            SELECT status, COUNT(*) as count FROM peminjaman GROUP BY status
+        `),
+        pool.query(`
+          SELECT a.id, a.nama, a.foto, SUM(p.jumlah) as total_ordered
+          FROM peminjaman p
+          JOIN alat a ON p.alat_id = a.id
+          GROUP BY a.id, a.nama, a.foto
+          ORDER BY total_ordered DESC
+          LIMIT 5
         `)
       ]);
 
@@ -79,6 +88,7 @@ export async function GET(request: NextRequest) {
         },
         recentPeminjaman: recentPeminjamanResult.rows,
         recentActivity: recentActivityResult.rows,
+        topOrderedAlat: topOrderedAlatResult.rows,
         charts: {
           monthlyPeminjaman: monthlyPeminjamanResult.rows.map(row => ({ name: row.month.trim(), total: parseInt(row.count) })),
           peminjamanByStatus: peminjamanByStatusResult.rows.map(row => ({ name: row.status, value: parseInt(row.count) }))

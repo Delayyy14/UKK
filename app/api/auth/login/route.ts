@@ -23,6 +23,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if verified (only for peminjam)
+    if (user.role === 'peminjam' && !user.is_verified) {
+      return NextResponse.json(
+        {
+          error: 'Email belum diverifikasi. Silakan verifikasi email Anda.',
+          requireVerification: true,
+          email: user.email
+        },
+        { status: 403 }
+      );
+    }
+
+
+
     // Set secure cookie
     await setAuthCookie(user);
 

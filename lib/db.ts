@@ -12,10 +12,13 @@ const pool = new Pool({
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
 
-// Test connection
-pool.on('connect', () => {
+// Test connection and set default timezone
+pool.on('connect', (client) => {
   console.log('Connected to PostgreSQL database');
+  client.query("SET timezone TO 'Asia/Jakarta'")
+    .catch(err => console.error('Error setting timezone:', err));
 });
+
 
 pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);

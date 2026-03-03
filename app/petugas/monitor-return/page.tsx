@@ -292,10 +292,12 @@ export default function MonitorReturnPage() {
               <div>
                 <label className="block text-sm font-medium mb-1">Denda (Rp)</label>
                 <input
-                  type="number"
-                  min="0"
+                  type="text"
                   value={formData.denda}
-                  onChange={(e) => setFormData({ ...formData, denda: parseInt(e.target.value) || 0 })}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9]/g, '');
+                    setFormData({ ...formData, denda: parseInt(val) || 0 });
+                  }}
                   className="w-full px-3 py-2 border rounded"
                   placeholder="0"
                 />
