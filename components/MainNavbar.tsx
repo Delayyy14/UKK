@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Menu, LayoutDashboard, LogOut } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -94,6 +94,9 @@ export default function MainNavbar() {
             <SheetContent side="right">
               <SheetHeader>
                 <SheetTitle className="text-left">Menu</SheetTitle>
+                <SheetDescription className="sr-only">
+                  Menu navigasi untuk akses fitur aplikasi.
+                </SheetDescription>
               </SheetHeader>
 
               <div className="flex flex-col gap-4 mt-6">

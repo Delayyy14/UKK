@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { SidebarContent } from './Sidebar';
 import { useState } from 'react';
 
@@ -73,6 +73,12 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-64 border-r">
+              <SheetHeader className="sr-only">
+                <SheetTitle>Menu Navigasi</SheetTitle>
+                <SheetDescription>
+                  Akses berbagai fitur dan pengaturan aplikasi melalui menu ini.
+                </SheetDescription>
+              </SheetHeader>
               <SidebarContent userRole={userRole} onItemClick={() => setOpen(false)} />
             </SheetContent>
           </Sheet>

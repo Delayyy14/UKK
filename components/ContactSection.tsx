@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { Send, CheckCircle, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Send, CheckCircle, Loader2, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function ContactSection() {
+  const [user, setUser] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,6 +16,19 @@ export default function ContactSection() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setFormData(prev => ({
+        ...prev,
+        name: parsedUser.nama || '',
+        email: parsedUser.email || '',
+      }));
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,7 +112,27 @@ export default function ContactSection() {
           <div className="relative bg-white border border-gray-100 rounded-3xl p-8 md:p-10 shadow-xl shadow-gray-100/50">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">Kirim Pesan</h3>
             
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 relative">
+              {!user && (
+                <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-[2px] rounded-2xl flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+                  <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 max-w-[280px]">
+                    <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Lock className="w-6 h-6" />
+                    </div>
+                    <h4 className="text-lg font-bold text-gray-900 mb-2">Login Diperlukan</h4>
+                    <p className="text-sm text-gray-600 mb-6">
+                      Silakan masuk ke akun Anda terlebih dahulu untuk Mengirimkan Pesan.
+                    </p>
+                    <Link
+                      href="/login"
+                      className="inline-flex items-center justify-center w-full px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all shadow-md hover:shadow-lg"
+                    >
+                      Masuk Sekarang
+                    </Link>
+                  </div>
+                </div>
+              )}
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium text-gray-700">Nama</label>
@@ -105,9 +140,10 @@ export default function ContactSection() {
                     id="name"
                     type="text"
                     required
+                    disabled={!user}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:bg-white"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:bg-white disabled:opacity-50"
                     placeholder="Nama Anda"
                   />
                 </div>
@@ -117,9 +153,10 @@ export default function ContactSection() {
                     id="email"
                     type="email"
                     required
+                    disabled={!user}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:bg-white"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:bg-white disabled:opacity-50"
                     placeholder="nama@email.com"
                   />
                 </div>
@@ -131,9 +168,10 @@ export default function ContactSection() {
                   id="subject"
                   type="text"
                   required
+                  disabled={!user}
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:bg-white"
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:bg-white disabled:opacity-50"
                   placeholder="Ada yang bisa kami bantu?"
                 />
               </div>
@@ -143,10 +181,11 @@ export default function ContactSection() {
                 <textarea
                   id="message"
                   required
+                  disabled={!user}
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:bg-white resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all hover:bg-white resize-none disabled:opacity-50"
                   placeholder="Tulis pesan Anda di sini..."
                 />
               </div>
@@ -165,7 +204,7 @@ export default function ContactSection() {
               ) : (
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !user}
                   className="w-full group relative flex items-center justify-center space-x-2 py-4 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-semibold transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {loading ? (

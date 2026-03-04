@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Menu, LayoutDashboard, LogOut } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -79,6 +79,9 @@ export function LandingNavbar() {
           <SheetContent side="right">
             <SheetHeader>
                <SheetTitle className="text-left">Menu</SheetTitle>
+               <SheetDescription className="sr-only">
+                 Navigasi menu untuk halaman utama.
+               </SheetDescription>
             </SheetHeader>
             <div className="flex flex-col gap-4 mt-6">
               <Link href="/#features" className="text-sm font-medium transition-colors hover:text-primary">

@@ -1,9 +1,20 @@
-
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
+import { cookies } from 'next/headers';
+import { verifyToken } from '@/lib/token';
 
 export async function POST(request: Request) {
     try {
+        const token = cookies().get('auth_token')?.value;
+        const payload = token ? await verifyToken(token) : null;
+
+        if (!payload) {
+            return NextResponse.json(
+                { error: 'Anda harus login terlebih dahulu untuk mengirim pesan.' },
+                { status: 401 }
+            );
+        }
+
         const { name, email, subject, message } = await request.json();
 
         if (!name || !email || !message) {
