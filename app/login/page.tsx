@@ -128,6 +128,14 @@ export default function LoginPage() {
                   <span className="sr-only">Toggle password visibility</span>
                 </Button>
               </div>
+              <div className="flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  Lupa Kata Sandi?
+                </Link>
+              </div>
             </div>
 
             {/* Submit Button */}
