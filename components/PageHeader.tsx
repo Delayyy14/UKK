@@ -7,6 +7,7 @@ interface PageHeaderProps {
   breadcrumbItems: { label: string; href: string }[];
   imageSrc?: string;
   className?: string;
+  description?: string;
 }
 
 export default function PageHeader({
@@ -14,6 +15,7 @@ export default function PageHeader({
   breadcrumbItems,
   imageSrc = '/login-bg.jpg', 
   className,
+  description,
 }: PageHeaderProps) {
   return (
     <div 
@@ -36,6 +38,7 @@ export default function PageHeader({
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-2">
           {title}
         </h1>
+        <p>{description}</p>
         
         <nav className="flex items-center justify-center space-x-2 text-sm md:text-base font-medium">
           {breadcrumbItems.map((item, index) => {

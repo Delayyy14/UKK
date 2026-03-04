@@ -32,13 +32,13 @@ export function LandingNavbar() {
       
       {/* Desktop Menu */}
       <div className="hidden md:flex gap-6 items-center">
-        <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/" className="text-base font-semibold text-muted-foreground hover:text-foreground transition-colors">
           Beranda
         </Link>
-        <Link href="/products" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/products" className="text-base font-semibold text-muted-foreground hover:text-foreground transition-colors">
           Katalog
         </Link>
-        <Link href="/aboutus" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/aboutus" className="text-base font-semibold text-muted-foreground hover:text-foreground transition-colors">
           Tentang Kami
         </Link>
       </div>
@@ -84,10 +84,10 @@ export function LandingNavbar() {
                </SheetDescription>
             </SheetHeader>
             <div className="flex flex-col gap-4 mt-6">
-              <Link href="/#features" className="text-sm font-medium transition-colors hover:text-primary">
+              <Link href="/#features" className="text-base font-semibold transition-colors hover:text-primary">
                 Fitur
               </Link>
-              <Link href="/products" className="text-sm font-medium transition-colors hover:text-primary">
+              <Link href="/products" className="text-base font-semibold transition-colors hover:text-primary">
                 Katalog
               </Link>
               <hr className="border-muted" />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import ProductCard from '@/components/ProductCard';
+import BeritaCard from '@/components/BeritaCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -20,75 +20,67 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { Search, SlidersHorizontal, X, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import Pagination from '@/components/Pagination';
 import EmptyState from '@/components/EmptyState';
 
-interface Product {
+interface Berita {
   id: number;
-  nama: string;
-  deskripsi: string;
-  kategori_id: number;
-  jumlah: number;
-  jumlah_tersedia: number;
-  status: string;
+  judul: string;
+  konten: string;
   foto: string;
+  penulis: string;
+  slug: string;
+  kategori_id: number;
   kategori_nama: string;
-  harga_per_hari: number;
+  created_at: string;
 }
 
 interface Category {
   id: number;
   nama: string;
-  harga_per_hari: number;
 }
 
-interface ProductCatalogProps {
-  products: Product[];
+interface BeritaCatalogProps {
+  berita: Berita[];
   categories: Category[];
 }
 
-export default function ProductCatalog({ products, categories }: ProductCatalogProps) {
+export default function BeritaCatalog({ berita, categories }: BeritaCatalogProps) {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 8;
+  const ITEMS_PER_PAGE = 9;
 
-  // Derive filtered products
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.nama.toLowerCase().includes(search.toLowerCase()) || 
-                          (product.deskripsi && product.deskripsi.toLowerCase().includes(search.toLowerCase()));
+  // Filter logic
+  const filteredBerita = berita.filter((item) => {
+    const matchesSearch = item.judul.toLowerCase().includes(search.toLowerCase()) || 
+                          (item.konten && item.konten.toLowerCase().includes(search.toLowerCase()));
     
-    const matchesCategory = categoryFilter === 'all' || product.kategori_nama === categoryFilter;
-    
-    const matchesStatus = statusFilter === 'all' || 
-                          (statusFilter === 'tersedia' && product.jumlah_tersedia > 0) ||
-                          (statusFilter === 'habis' && product.jumlah_tersedia === 0);
+    const matchesCategory = categoryFilter === 'all' || item.kategori_nama === categoryFilter;
 
-    return matchesSearch && matchesCategory && matchesStatus;
+    return matchesSearch && matchesCategory;
   });
 
   const clearFilters = () => {
     setCategoryFilter('all');
-    setStatusFilter('all');
     setSearch('');
     setCurrentPage(1);
     setIsDialogOpen(false);
   };
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
-  const paginatedProducts = filteredProducts.slice(
+  const totalPages = Math.ceil(filteredBerita.length / ITEMS_PER_PAGE);
+  const paginatedBerita = filteredBerita.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
-  const hasNoData = products.length === 0;
-  const activeFiltersCount = (categoryFilter !== 'all' ? 1 : 0) + (statusFilter !== 'all' ? 1 : 0);
+  const hasNoData = berita.length === 0;
+  const activeFiltersCount = (categoryFilter !== 'all' ? 1 : 0);
 
   return (
     <div className="space-y-8">
@@ -98,7 +90,7 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input 
             type="text" 
-            placeholder="Cari nama alat atau deskripsi..." 
+            placeholder="Cari judul atau isi berita..." 
             className="pl-12 h-12 rounded-2xl border-zinc-200 focus:ring-blue-500/20"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
@@ -119,14 +111,14 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px] rounded-[30px]">
             <DialogHeader>
-              <DialogTitle className="text-xl font-black">Filter Produk</DialogTitle>
+              <DialogTitle className="text-xl font-black">Filter Berita</DialogTitle>
               <DialogDescription className="text-zinc-500 font-medium">
-                Sesuaikan kriteria pencarian untuk menemukan alat yang Anda butuhkan.
+                Sesuaikan kriteria untuk menemukan artikel yang relevan.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 py-6">
               <div className="space-y-3">
-                <Label htmlFor="category" className="text-sm font-bold text-zinc-900 ml-1">Kategori</Label>
+                <Label htmlFor="category" className="text-sm font-bold text-zinc-900 ml-1">Kategori Berita</Label>
                 <Select value={categoryFilter} onValueChange={(val) => { setCategoryFilter(val); setCurrentPage(1); }}>
                   <SelectTrigger id="category" className="h-12 rounded-xl border-zinc-200">
                     <SelectValue placeholder="Pilih Kategori" />
@@ -138,19 +130,6 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
                         {cat.nama}
                       </SelectItem>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-3">
-                <Label htmlFor="status" className="text-sm font-bold text-zinc-900 ml-1">Status Ketersediaan</Label>
-                <Select value={statusFilter} onValueChange={(val) => { setStatusFilter(val); setCurrentPage(1); }}>
-                  <SelectTrigger id="status" className="h-12 rounded-xl border-zinc-200">
-                    <SelectValue placeholder="Pilih Status" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="all">Semua Status</SelectItem>
-                    <SelectItem value="tersedia">Tersedia</SelectItem>
-                    <SelectItem value="habis">Habis</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -179,15 +158,6 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
               />
             </Badge>
           )}
-          {statusFilter !== 'all' && (
-            <Badge variant="secondary" className="gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-bold text-xs">
-              Status: {statusFilter === 'tersedia' ? 'Tersedia' : 'Habis'}
-              <X 
-                className="h-3 w-3 cursor-pointer hover:text-blue-900 transition-colors" 
-                onClick={() => { setStatusFilter('all'); setCurrentPage(1); }}
-              />
-            </Badge>
-          )}
           <Button 
             variant="link" 
             size="sm" 
@@ -199,19 +169,19 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
         </div>
       )}
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {paginatedProducts.length > 0 ? (
-          paginatedProducts.map((item) => (
-            <ProductCard key={item.id} item={item} />
+      {/* News Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {paginatedBerita.length > 0 ? (
+          paginatedBerita.map((item) => (
+            <BeritaCard key={item.id} item={item} />
           ))
         ) : (
-          <div className="col-span-full">
+          <div className="col-span-full py-12">
             <EmptyState type={hasNoData ? "data" : "search"} />
             {!hasNoData && (
-              <div className="flex justify-center mt-4">
-                <Button variant="outline" onClick={clearFilters}>
-                  Lihat Semua Produk
+              <div className="flex justify-center mt-6">
+                <Button variant="outline" onClick={clearFilters} className="rounded-xl font-bold">
+                  Lihat Semua Berita
                 </Button>
               </div>
             )}
@@ -220,19 +190,21 @@ export default function ProductCatalog({ products, categories }: ProductCatalogP
       </div>
 
       {/* Pagination component */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mt-12 gap-4">
-        <p className="text-sm text-muted-foreground">
-          Menampilkan {paginatedProducts.length} dari {filteredProducts.length} produk
-        </p>
-        <Pagination 
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={(page) => {
-            setCurrentPage(page);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-      </div>
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-12 gap-6 bg-zinc-50 p-6 rounded-[30px] border border-zinc-100">
+          <p className="text-sm text-zinc-500 font-bold">
+            Menampilkan <span className="text-zinc-900">{paginatedBerita.length}</span> dari <span className="text-zinc-900">{filteredBerita.length}</span> berita
+          </p>
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => {
+              setCurrentPage(page);
+              window.scrollTo({ top: 400, behavior: 'smooth' });
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

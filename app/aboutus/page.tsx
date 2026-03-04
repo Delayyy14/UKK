@@ -11,6 +11,7 @@ export default function AboutUsPage() {
 
       <PageHeader 
         title="Tentang Kami" 
+        description="Informasi tentang website Pinjamin"
         breadcrumbItems={[
           { label: 'Beranda', href: '/' },
           { label: 'Tentang Kami', href: '/aboutus' },

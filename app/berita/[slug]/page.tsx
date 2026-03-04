@@ -143,16 +143,16 @@ export default function BeritaDetailPage({ params }: { params: { slug: string } 
                             href={`/berita/${item.slug || item.id}`}
                             className="group flex flex-col gap-4"
                          >
-                            <div className="relative aspect-[16/10] rounded-3xl overflow-hidden border border-zinc-100 shadow-sm">
+                            <div className="relative rounded-2xl overflow-hidden border border-zinc-100 shadow-sm">
                                {item.foto ? (
                                   <img 
                                     src={item.foto} 
                                     alt={item.judul} 
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                    className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500" 
                                   />
                                ) : (
-                                  <div className="w-full h-full bg-zinc-50 flex items-center justify-center">
-                                     <Newspaper className="h-8 w-8 text-zinc-200" />
+                                  <div className="w-full h-32 bg-zinc-50 flex items-center justify-center">
+                                     <Newspaper className="h-6 w-6 text-zinc-200" />
                                   </div>
                                )}
                             </div>
@@ -163,9 +163,6 @@ export default function BeritaDetailPage({ params }: { params: { slug: string } 
                                <h4 className="text-sm font-bold text-zinc-900 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
                                   {item.judul}
                                </h4>
-                               <div className="flex items-center gap-1 text-xs font-bold text-blue-600">
-                                  Baca Selengkapnya <ArrowRight className="h-3 w-3" />
-                               </div>
                             </div>
                          </Link>
                       ))

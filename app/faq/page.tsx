@@ -54,6 +54,7 @@ export default function FAQPage() {
       
       <PageHeader 
         title="Frequently Asked Questions" 
+        description="Temukan jawaban untuk pertanyaan umum mengenai peminjaman alat."
         breadcrumbItems={[
           { label: 'Beranda', href: '/' },
           { label: 'FAQ', href: '/faq' },

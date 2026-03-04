@@ -1,52 +1,53 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import MainNavbar from '@/components/MainNavbar';
 import Footer from '@/components/Footer';
 import PageHeader from '@/components/PageHeader';
-import { useEffect, useState } from 'react';
-import { Calendar, User, ArrowRight, Newspaper } from 'lucide-react';
-import Link from 'next/link';
-import EmptyState from '@/components/EmptyState';
-import BeritaCard from '@/components/BeritaCard';
-
-interface Berita {
-  id: number;
-  judul: string;
-  konten: string;
-  foto: string;
-  penulis: string;
-  slug: string;
-  created_at: string;
-}
+import BeritaCatalog from '@/components/BeritaCatalog';
 
 export default function BeritaPage() {
-  const [berita, setBerita] = useState<Berita[]>([]);
+  const [berita, setBerita] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchBerita();
+    Promise.all([fetchBerita(), fetchCategories()]).finally(() => {
+      setLoading(false);
+    });
   }, []);
 
   const fetchBerita = async () => {
     try {
       const res = await fetch('/api/berita');
-      const data = await res.json();
       if (res.ok) {
+        const data = await res.json();
         setBerita(data);
       }
     } catch (error) {
       console.error('Error fetching berita:', error);
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('/api/berita/kategori');
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(data);
+      }
+    } catch (error) {
+      console.error('Error fetching berita categories:', error);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pt-16">
+    <div className="min-h-screen bg-white flex flex-col pt-16">
       <MainNavbar />
       
       <PageHeader 
         title="Berita & Artikel" 
+        description="Temukan berita dan artikel terbaru"
         breadcrumbItems={[
           { label: 'Beranda', href: '/' },
           { label: 'Berita', href: '/berita' },
@@ -55,21 +56,19 @@ export default function BeritaPage() {
 
       <div className="container mx-auto py-16 px-6">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="bg-zinc-50 rounded-[40px] h-[450px]" />
-            ))}
-          </div>
-        ) : berita.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {berita.map((item) => (
-              <BeritaCard key={item.id} item={item} />
-            ))}
+          <div className="space-y-12">
+             <div className="flex flex-col sm:flex-row gap-4">
+                <div className="h-12 bg-zinc-50 rounded-2xl flex-1 animate-pulse" />
+                <div className="h-12 bg-zinc-50 rounded-2xl w-32 animate-pulse" />
+             </div>
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+               {[1, 2, 3, 4, 5, 6].map(i => (
+                 <div key={i} className="bg-zinc-50 rounded-[30px] h-[400px] animate-pulse" />
+               ))}
+             </div>
           </div>
         ) : (
-          <div className="py-20">
-            <EmptyState type="data" />
-          </div>
+          <BeritaCatalog berita={berita} categories={categories} />
         )}
       </div>
 

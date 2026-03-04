@@ -41,6 +41,7 @@ export default async function ProductsPage() {
       
       <PageHeader 
         title="Katalog Peralatan" 
+        description="Mari Temukan Barang yang sedang anda cari!"
         breadcrumbItems={[
           { label: 'Beranda', href: '/' },
           { label: 'Katalog', href: '/products' },

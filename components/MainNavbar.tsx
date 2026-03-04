@@ -35,22 +35,22 @@ export default function MainNavbar() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-6 items-center">
-          <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="/" className="text-base font-semibold text-muted-foreground hover:text-foreground transition-colors">
             Beranda
           </Link>
-          <Link href="/products" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="/products" className="text-base font-semibold text-muted-foreground hover:text-foreground transition-colors">
             Katalog
           </Link>
-          <Link href="/berita" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="/berita" className="text-base font-semibold text-muted-foreground hover:text-foreground transition-colors">
             Berita
           </Link>
-          <Link href="/aboutus" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="/aboutus" className="text-base font-semibold text-muted-foreground hover:text-foreground transition-colors">
             Tentang Kami
           </Link>
-          <Link href="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="/contact" className="text-base font-semibold text-muted-foreground hover:text-foreground transition-colors">
             Kontak
           </Link>
-          <Link href="/faq" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="/faq" className="text-base font-semibold text-muted-foreground hover:text-foreground transition-colors">
             FAQ
           </Link>
         </div>
@@ -100,19 +100,19 @@ export default function MainNavbar() {
               </SheetHeader>
 
               <div className="flex flex-col gap-4 mt-6">
-                <Link href="/" className="text-sm font-medium hover:text-primary">
+                <Link href="/" className="text-base font-semibold hover:text-primary">
                   Beranda
                 </Link>
-                <Link href="/products" className="text-sm font-medium hover:text-primary">
+                <Link href="/products" className="text-base font-semibold hover:text-primary">
                   Katalog
                 </Link>
-                <Link href="/berita" className="text-sm font-medium hover:text-primary">
+                <Link href="/berita" className="text-base font-semibold hover:text-primary">
                   Berita
                 </Link>
-                <Link href="/aboutus" className="text-sm font-medium hover:text-primary">
+                <Link href="/aboutus" className="text-base font-semibold hover:text-primary">
                   Tentang Kami
                 </Link>
-                <Link href="/faq" className="text-sm font-medium hover:text-primary">
+                <Link href="/faq" className="text-base font-semibold hover:text-primary">
                   FAQ
                 </Link>
 
