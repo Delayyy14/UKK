@@ -2,6 +2,26 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Fix Finding 14
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+      },
+    ],
+  },
   async headers() {
     return [
       {

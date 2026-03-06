@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface ProductCardProps {
   item: any;
@@ -39,11 +40,12 @@ export default function ProductCard({ item }: ProductCardProps) {
       <Card className="overflow-hidden group hover:shadow-lg transition-all border-none shadow-sm bg-card/50">
         <div className="aspect-video bg-muted relative overflow-hidden rounded-t-lg">
           {item.foto ? (
-             /* eslint-disable-next-line @next/next/no-img-element */
-            <img 
+            <Image 
               src={item.foto} 
               alt={item.nama}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full text-muted-foreground bg-secondary">

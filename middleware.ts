@@ -10,10 +10,37 @@ const RATE_LIMIT_THRESHOLD = 60; // Global threshold
 const AUTH_RATE_LIMIT_THRESHOLD = 5; // Stricter threshold for auth
 const RATE_LIMIT_WINDOW = 60 * 1000;
 
+// IP Blacklist & Internal Range Blocking
+const BLOCKED_IPS = process.env.BLOCKED_IPS?.split(',') || [];
+const BLOCK_INTERNAL_IPS = process.env.BLOCK_INTERNAL_IPS === 'true';
+
+function isInternalIP(ip: string): boolean {
+    if (ip === '::1' || ip === '127.0.0.1' || ip === 'localhost') return true;
+    const parts = ip.split('.').map(Number);
+    if (parts.length !== 4) return false;
+    return (
+        parts[0] === 10 ||
+        (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) ||
+        (parts[0] === 192 && parts[1] === 168)
+    );
+}
+
 export async function middleware(request: NextRequest) {
-    const ip = request.headers.get('x-forwarded-for') || request.ip || 'unknown';
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || request.ip || 'unknown';
     const now = Date.now();
     const path = request.nextUrl.pathname;
+
+    // --- 0. IP BLOCKING ---
+    if (BLOCKED_IPS.includes(ip)) {
+        return new NextResponse('Access Denied: Your IP is blacklisted.', { status: 403 });
+    }
+
+    if (BLOCK_INTERNAL_IPS && isInternalIP(ip)) {
+        // Allow internal IP only in development
+        if (process.env.NODE_ENV !== 'development') {
+            return new NextResponse('Access Denied: Internal IP access is restricted.', { status: 403 });
+        }
+    }
 
     // --- 1. RATE LIMITING ---
 
@@ -128,7 +155,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    runtime: 'nodejs',
     matcher: [
         '/api/:path*',
         '/admin/:path*',

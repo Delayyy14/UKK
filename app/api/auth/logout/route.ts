@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { removeAuthCookie, revokeToken } from '@/lib/token';
+import { removeAuthCookie } from '@/lib/token';
+import { revokeToken } from '@/lib/token-server';
 
 export async function POST(request: NextRequest) {
     const token = request.cookies.get('auth_token')?.value;

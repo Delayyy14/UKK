@@ -2,6 +2,7 @@
 
 import { Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import Image from 'next/image';
 
 const testimonials = [
   {
@@ -26,11 +27,12 @@ export default function TestimonialSection() {
     <section className="relative py-24 px-6 md:px-12 lg:px-24 overflow-hidden">
         {/* Background Image with Overlay */}
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none -z-10">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
+            <Image 
                 src="/images/svg/background-1.jpeg" 
                 alt="Background" 
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                priority={false}
             />
             {/* White overlay to ensure text readability while showing the background */}
             <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px]" />
@@ -52,9 +54,11 @@ export default function TestimonialSection() {
           <span className="relative inline-block px-1">
             <span className="relative z-10">About Us</span>
             {/* Brush underline */}
-            <img
+            <Image
               src="/images/svg/effect-water-brush.png"
               alt="brush"
+              width={200}
+              height={48}
               className="absolute -bottom-10 left-0 w-full h-12 -z-10 opacity-70 scale-110"
             />
           </span>
@@ -81,11 +85,12 @@ export default function TestimonialSection() {
                 </div>
                 
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img 
+                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 relative">
+                        <Image 
                             src={item.image} 
                             alt={item.name} 
+                            width={48}
+                            height={48}
                             className="w-full h-full object-cover"
                         />
                     </div>

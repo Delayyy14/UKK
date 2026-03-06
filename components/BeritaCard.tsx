@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Newspaper } from 'lucide-react';
 
 interface Berita {
@@ -23,10 +24,12 @@ export default function BeritaCard({ item }: { item: Berita }) {
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-zinc-50">
         {item.foto ? (
-          <img 
+          <Image 
             src={item.foto} 
             alt={item.judul} 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

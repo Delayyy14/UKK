@@ -3,9 +3,18 @@ import pool from '@/lib/db';
 import { hashPassword, isValidPassword } from '@/lib/auth';
 import { logActivity } from '@/lib/activityLog';
 import { sanitizeText } from '@/lib/sanitize';
+import { verifyTokenFull } from '@/lib/token-server';
+import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
   try {
+    const token = cookies().get('auth_token')?.value;
+    if (token) {
+      const payload = await verifyTokenFull(token);
+      if (!payload) {
+        return NextResponse.json({ error: 'Unauthorized: Session revoked or expired' }, { status: 401 });
+      }
+    }
     const userIdHeader = request.headers.get('x-user-id');
 
     if (!userIdHeader) {
@@ -41,6 +50,13 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    const token = cookies().get('auth_token')?.value;
+    if (token) {
+      const payload = await verifyTokenFull(token);
+      if (!payload) {
+        return NextResponse.json({ error: 'Unauthorized: Session revoked or expired' }, { status: 401 });
+      }
+    }
     const userIdHeader = request.headers.get('x-user-id');
 
     if (!userIdHeader) {

@@ -1,14 +1,17 @@
 import MainNavbar from '@/components/MainNavbar';
-import Footer from '@/components/Footer';
 import Link from 'next/link';
+import Image from 'next/image';
+import dynamicImport from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, CheckCircle, Clock, Shield, MapPin, Users, Package, Calendar, Heart, Newspaper } from 'lucide-react';
 import pool from '@/lib/db';
 import ProductCard from '@/components/ProductCard';
-import ContactSection from '@/components/ContactSection';
-import TestimonialSection from '@/components/TestimonialSection';
 import BeritaCard from '@/components/BeritaCard';
+
+const ContactSection = dynamicImport(() => import('@/components/ContactSection'), { ssr: false });
+const TestimonialSection = dynamicImport(() => import('@/components/TestimonialSection'), { ssr: false });
+const Footer = dynamicImport(() => import('@/components/Footer'), { ssr: false });
 
 async function getFeaturedProducts() {
   try {
@@ -90,8 +93,13 @@ export default async function LandingPage() {
             <div className="flex items-center gap-4 pt-6">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
-                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=User${i}`} alt="user" />
+                  <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden relative">
+                    <Image 
+                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=User${i}`} 
+                      alt="user" 
+                      width={40}
+                      height={40}
+                    />
                   </div>
                 ))}
               </div>
@@ -107,10 +115,13 @@ export default async function LandingPage() {
   {/* Decorative blob */}
   <div className="absolute inset-0 bg-gradient-to-tr from-blue-200/40 to-purple-200/40 blur-[100px] transform scale-110 animate-pulse" />
 
-  <img 
+  <Image 
     src="/images/person/hiking-image.jpeg" 
     alt="Hiking Image" 
-    className="w-full h-full object-cover drop-shadow-2xl relative z-20 hover:scale-105 transition-transform duration-700"
+    fill
+    priority
+    className="object-cover drop-shadow-2xl relative z-20 hover:scale-105 transition-transform duration-700"
+    sizes="(min-width: 1024px) 50vw, 100vw"
   />
 </div>
         </div>
@@ -216,7 +227,13 @@ export default async function LandingPage() {
 
             <div className="relative order-1 lg:order-2">
                <div className="aspect-square rounded-[60px] bg-gradient-to-br from-blue-600 to-purple-700 shadow-2xl overflow-hidden relative group">
-                  <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay opacity-60 group-hover:scale-110 transition-transform duration-700" />
+                  <Image 
+                    src="https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070&auto=format&fit=crop" 
+                    alt="Adventure Background" 
+                    fill 
+                    className="object-cover mix-blend-overlay opacity-60 group-hover:scale-110 transition-transform duration-700"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-12 text-center space-y-4">
                     <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center mb-4">
                       <ArrowRight className="w-10 h-10 rotate-[-45deg]" />
