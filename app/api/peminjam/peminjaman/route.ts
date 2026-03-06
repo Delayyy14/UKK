@@ -4,15 +4,17 @@ import { logActivity } from '@/lib/activityLog';
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('user_id');
+    const userIdHeader = request.headers.get('x-user-id');
 
-    if (!userId) {
+    if (!userIdHeader) {
       return NextResponse.json(
-        { error: 'user_id required' },
-        { status: 400 }
+        { error: 'Unauthorized: Authentication required' },
+        { status: 401 }
       );
     }
+
+    const userId = parseInt(userIdHeader);
+
 
     const result = await pool.query(`
       SELECT p.*, a.nama as alat_nama 
@@ -33,10 +35,20 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, alasan, total_harga } = await request.json();
+    const { alat_id, jumlah, tanggal_pinjam, tanggal_kembali, alasan, total_harga } = await request.json();
+    const userIdHeader = request.headers.get('x-user-id');
+
+    if (!userIdHeader) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    const userId = parseInt(userIdHeader);
 
     // Validate required fields
-    if (!user_id || !alat_id || !jumlah || !tanggal_pinjam || !tanggal_kembali) {
+    if (!alat_id || !jumlah || !tanggal_pinjam || !tanggal_kembali) {
       return NextResponse.json(
         { error: 'Semua field wajib diisi' },
         { status: 400 }
@@ -72,19 +84,20 @@ export async function POST(request: NextRequest) {
       `INSERT INTO peminjaman (user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, status, alasan, total_harga) 
        VALUES ($1, $2, $3, $4, $5, 'pending', $6, $7) 
        RETURNING *`,
-      [user_id, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, alasan || null, total_harga || 0]
+      [userId, alat_id, jumlah, tanggal_pinjam, tanggal_kembali, alasan || null, total_harga || 0]
     );
 
     const peminjaman = result.rows[0];
 
     // Log activity
     await logActivity(
-      user_id,
+      userId,
       'CREATE',
       'peminjaman',
       peminjaman.id,
-      { user_id, alat_id, jumlah, status: 'pending' }
+      { userId, alat_id, jumlah, status: 'pending' }
     );
+
 
     return NextResponse.json(peminjaman, { status: 201 });
   } catch (error: any) {

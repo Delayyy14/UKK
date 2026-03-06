@@ -5,14 +5,16 @@ import { logActivity } from '@/lib/activityLog';
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = request.headers.get('authorization')?.replace('Bearer ', '');
-    
-    if (!userId) {
+    const userIdHeader = request.headers.get('x-user-id');
+
+    if (!userIdHeader) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Unauthorized: Authentication required' },
         { status: 401 }
       );
     }
+
+    const userId = parseInt(userIdHeader);
 
     const result = await pool.query(
       'SELECT id, username, nama, email, foto, role FROM users WHERE id = $1',
@@ -38,14 +40,17 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const userId = request.headers.get('authorization')?.replace('Bearer ', '');
-    
-    if (!userId) {
+    const userIdHeader = request.headers.get('x-user-id');
+
+    if (!userIdHeader) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Unauthorized: Authentication required' },
         { status: 401 }
       );
     }
+
+    const userId = parseInt(userIdHeader);
+
 
     const { nama, email, password, foto } = await request.json();
 
@@ -69,7 +74,7 @@ export async function PUT(request: NextRequest) {
     }
 
     query += ` WHERE id = $${paramIndex} RETURNING id, username, nama, email, foto, role`;
-    values.push(parseInt(userId));
+    values.push(userId);
 
     const result = await pool.query(query, values);
 
@@ -84,12 +89,13 @@ export async function PUT(request: NextRequest) {
 
     // Log activity
     await logActivity(
-      parseInt(userId),
+      userId,
       'UPDATE',
       'users',
-      parseInt(userId),
+      userId,
       { nama, email }
     );
+
 
     return NextResponse.json(updatedUser);
   } catch (error: any) {

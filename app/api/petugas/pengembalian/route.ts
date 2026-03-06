@@ -23,15 +23,17 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { peminjaman_id, tanggal_kembali, kondisi, catatan, denda } = await request.json();
-    const authHeader = request.headers.get('authorization');
-    const petugasId = authHeader?.replace('Bearer ', '');
+    const petugasIdHeader = request.headers.get('x-user-id');
 
-    if (!petugasId) {
+    if (!petugasIdHeader) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Unauthorized: Authentication required' },
         { status: 401 }
       );
     }
+
+    const petugasId = parseInt(petugasIdHeader);
+
 
     // Get peminjaman info
     const peminjamanResult = await pool.query(
@@ -87,12 +89,13 @@ export async function POST(request: NextRequest) {
 
     // Log activity dengan petugas yang melakukan konfirmasi
     await logActivity(
-      parseInt(petugasId),
+      petugasId,
       'RETURN_CONFIRM',
       'pengembalian',
       pengembalian.id,
-      { peminjaman_id, kondisi, denda, confirmed_by: petugasId }
+      { peminjaman_id, kondisi, denda, confirmed_by: petugasId.toString() }
     );
+
 
     return NextResponse.json(pengembalian, { status: 201 });
   } catch (error) {

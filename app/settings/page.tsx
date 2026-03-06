@@ -31,11 +31,8 @@ export default function SettingsPage() {
       if (!userStr) return;
 
       const userData = JSON.parse(userStr);
-      const res = await fetch('/api/profile', {
-        headers: {
-          'Authorization': `Bearer ${userData.id}`,
-        },
-      });
+      const res = await fetch('/api/profile');
+
 
       if (res.ok) {
         const data = await res.json();
@@ -127,10 +124,10 @@ export default function SettingsPage() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userData.id}`,
         },
         body: JSON.stringify(updateData),
       });
+
 
       if (res.ok) {
         const updatedUser = await res.json();

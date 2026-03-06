@@ -8,7 +8,16 @@ export async function GET(
   try {
     const peminjamanId = params.id;
 
-    const result = await pool.query(`
+    const userIdHeader = request.headers.get('x-user-id');
+    const userRole = request.headers.get('x-user-role');
+
+    if (!userIdHeader) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = parseInt(userIdHeader);
+
+    let query = `
       SELECT 
         p.*,
         a.nama as alat_nama,
@@ -23,7 +32,18 @@ export async function GET(
       LEFT JOIN users u ON p.user_id = u.id
       LEFT JOIN kategori k ON a.kategori_id = k.id
       WHERE p.id = $1
-    `, [peminjamanId]);
+    `;
+
+    const queryParams: any[] = [peminjamanId];
+
+    // If not admin/petugas, restrict to own records
+    if (userRole !== 'admin' && userRole !== 'petugas') {
+      query += ' AND p.user_id = $2';
+      queryParams.push(userId);
+    }
+
+    const result = await pool.query(query, queryParams);
+
 
     if (result.rows.length === 0) {
       return NextResponse.json(

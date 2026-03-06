@@ -3,16 +3,17 @@ import pool from '@/lib/db';
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = request.headers.get('authorization')?.replace('Bearer ', '');
+    const userIdHeader = request.headers.get('x-user-id');
+    const userRole = request.headers.get('x-user-role');
 
-    // Get user role
-    let userRole = 'peminjam';
-    if (userId) {
-      const userResult = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
-      if (userResult.rows.length > 0) {
-        userRole = userResult.rows[0].role;
-      }
+    if (!userIdHeader) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Authentication required' },
+        { status: 401 }
+      );
     }
+
+    const userId = parseInt(userIdHeader);
 
     if (userRole === 'admin') {
       // Admin stats
@@ -155,7 +156,7 @@ export async function GET(request: NextRequest) {
       });
     } else {
       // Peminjam stats
-      const userIdNum = userId ? parseInt(userId) : null;
+      const userIdNum = userId;
       const [
         myPeminjamanResult,
         pendingResult,

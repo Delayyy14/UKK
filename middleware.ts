@@ -48,6 +48,8 @@ export async function middleware(request: NextRequest) {
         }
     }
 
+    // --- API PROTECTION ---
+
     // Proteksi API Admin
     if (path.startsWith('/api/admin')) {
         if (!payload || payload.role !== 'admin') {
@@ -62,14 +64,38 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    // Proteksi API Peminjam & Profile
-    if (path.startsWith('/api/peminjam') || path.startsWith('/api/profile')) {
+    // Proteksi API Peminjam, Profile, & Dashboard
+    if (path.startsWith('/api/peminjam') || path.startsWith('/api/profile') || path.startsWith('/api/dashboard')) {
         if (!payload) {
             return NextResponse.json({ error: 'Unauthorized: Login required' }, { status: 401 });
         }
     }
 
-    return NextResponse.next();
+    // Proteksi API Messages (Restricted to Admin/Petugas)
+    if (path.startsWith('/api/messages')) {
+        if (!payload || (payload.role !== 'admin' && payload.role !== 'petugas')) {
+            return NextResponse.json({ error: 'Unauthorized: Access denied' }, { status: 403 });
+        }
+    }
+
+    // Proteksi API Setup (Disable in production/public)
+    if (path.startsWith('/api/setup')) {
+        return NextResponse.json({ error: 'Forbidden: Setup endpoints are disabled' }, { status: 403 });
+    }
+
+    // Safe injection of user info for route handlers
+    const requestHeaders = new Headers(request.headers);
+    if (payload) {
+        requestHeaders.set('x-user-id', payload.id.toString());
+        requestHeaders.set('x-user-role', payload.role);
+    }
+
+    return NextResponse.next({
+        request: {
+            headers: requestHeaders,
+        },
+    });
+
 }
 
 export const config = {

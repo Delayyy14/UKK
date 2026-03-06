@@ -100,11 +100,7 @@ export default function DashboardPage() {
       if (!userStr) return;
 
       const userData = JSON.parse(userStr);
-      const res = await fetch('/api/dashboard/stats', {
-        headers: {
-          'Authorization': `Bearer ${userData.id}`,
-        },
-      });
+      const res = await fetch('/api/dashboard/stats');
       const responseData = await res.json();
       
       // Format chart data names
