@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     const peminjaman = result.rows[0];
 
-    const userId = request.headers.get('authorization')?.replace('Bearer ', '') || null;
+    const userId = request.headers.get('x-user-id');
 
     await logActivity(
       userId ? parseInt(userId) : null,

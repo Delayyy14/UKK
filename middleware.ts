@@ -4,14 +4,42 @@ import { verifyToken } from '@/lib/token';
 
 // Rate Limiting (In-memory)
 const rateLimitMap = new Map<string, { count: number, lastRequest: number }>();
-const RATE_LIMIT_THRESHOLD = 60; // Max 60 request per menit
+const authRateLimitMap = new Map<string, { count: number, lastRequest: number }>();
+
+const RATE_LIMIT_THRESHOLD = 60; // Global threshold
+const AUTH_RATE_LIMIT_THRESHOLD = 5; // Stricter threshold for auth
 const RATE_LIMIT_WINDOW = 60 * 1000;
 
 export async function middleware(request: NextRequest) {
     const ip = request.headers.get('x-forwarded-for') || request.ip || 'unknown';
     const now = Date.now();
+    const path = request.nextUrl.pathname;
 
     // --- 1. RATE LIMITING ---
+
+    // Auth-specific rate limiting
+    if (path.startsWith('/api/auth/login') ||
+        path.startsWith('/api/auth/forgot-password') ||
+        path.startsWith('/api/auth/reset-password') ||
+        path.startsWith('/api/auth/verify-otp')) {
+
+        const authData = authRateLimitMap.get(ip);
+        if (authData) {
+            if (now - authData.lastRequest < RATE_LIMIT_WINDOW) {
+                if (authData.count >= AUTH_RATE_LIMIT_THRESHOLD) {
+                    return NextResponse.json({ error: 'Too many authentication attempts. Please try again in a minute.' }, { status: 429 });
+                }
+                authData.count += 1;
+            } else {
+                authData.count = 1;
+                authData.lastRequest = now;
+            }
+        } else {
+            authRateLimitMap.set(ip, { count: 1, lastRequest: now });
+        }
+    }
+
+    // Global rate limiting
     const userRateData = rateLimitMap.get(ip);
     if (userRateData) {
         if (now - userRateData.lastRequest < RATE_LIMIT_WINDOW) {
@@ -28,7 +56,6 @@ export async function middleware(request: NextRequest) {
     }
 
     // --- 2. AUTH & RBAC (Role Based Access Control) ---
-    const path = request.nextUrl.pathname;
     const token = request.cookies.get('auth_token')?.value;
 
     // Verifikasi JWT token secara aman di sisi server

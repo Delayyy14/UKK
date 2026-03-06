@@ -1,29 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { logActivity } from '@/lib/activityLog';
+import { sanitizeHTML, sanitizeText } from '@/lib/sanitize';
 
 export async function GET(request: NextRequest) {
     try {
-        // Auto-migration - Run each query individually for better reliability
-        try {
-            await pool.query(`
-                CREATE TABLE IF NOT EXISTS kategori_berita (
-                    id SERIAL PRIMARY KEY,
-                    nama VARCHAR(255) NOT NULL,
-                    deskripsi TEXT,
-                    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-                )
-            `);
-
-            await pool.query(`
-                ALTER TABLE berita ADD COLUMN IF NOT EXISTS kategori_id INTEGER REFERENCES kategori_berita(id) ON DELETE SET NULL
-            `);
-        } catch (migrationError: any) {
-            console.error('Migration error in berita API:', migrationError.message);
-            // Non-critical: table or column might already exist or have issues, but we'll try to continue
-        }
-
         const result = await pool.query(`
             SELECT b.*, kb.nama as kategori_nama 
             FROM berita b 
@@ -43,11 +24,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { judul, konten, foto, penulis, slug, kategori_id } = body;
+        let { judul, konten, foto, penulis, slug, kategori_id } = body;
 
         if (!judul || !konten) {
             return NextResponse.json({ error: 'Judul dan konten berita wajib diisi' }, { status: 400 });
         }
+
+        // Sanitize inputs
+        judul = sanitizeText(judul);
+        konten = sanitizeHTML(konten);
+        penulis = sanitizeText(penulis || 'Admin');
 
         // Generate slug from title if not provided
         const generatedSlug = (slug && slug.trim() !== '') ? slug : judul.toLowerCase()
@@ -74,14 +60,10 @@ export async function POST(request: NextRequest) {
 
         const berita = result.rows[0];
 
-        // Temporarily skip logActivity to debug 500 error
-        /*
-        const authHeader = request.headers.get('authorization');
-        const userId = authHeader?.replace('Bearer ', '') || null;
-        if (userId && !isNaN(parseInt(userId))) {
+        const userId = request.headers.get('x-user-id');
+        if (userId) {
             await logActivity(parseInt(userId), 'CREATE', 'berita', berita.id, { judul });
         }
-        */
 
         return NextResponse.json(berita, { status: 201 });
     } catch (error: any) {

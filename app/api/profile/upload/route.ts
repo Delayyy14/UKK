@@ -24,6 +24,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Map MIME type to extension for security
+    const extMap: Record<string, string> = {
+      'image/jpeg': 'jpg',
+      'image/jpg': 'jpg',
+      'image/png': 'png',
+      'image/webp': 'webp'
+    };
+    const safeExt = extMap[file.type] || 'bin';
+
     // Validate file size (max 5MB)
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
@@ -36,10 +45,10 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Generate unique filename
+    // Generate unique filename with safe extension
     const timestamp = Date.now();
-    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const filename = `profile_${timestamp}_${originalName}`;
+    const originalName = file.name.split('.')[0].replace(/[^a-zA-Z0-9]/g, '_');
+    const filename = `profile_${timestamp}_${originalName}.${safeExt}`;
 
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage

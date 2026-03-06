@@ -35,23 +35,45 @@ export async function POST(request: NextRequest) {
         }
 
         const otpRecord = otpResult.rows[0];
+        const MAX_ATTEMPTS = 5;
 
         // Check if expired
         if (new Date() > new Date(otpRecord.expires_at)) {
+            await pool.query('DELETE FROM otps WHERE id = $1', [otpRecord.id]);
             return NextResponse.json(
                 { error: 'Kode OTP sudah kadaluwarsa' },
                 { status: 400 }
             );
         }
 
+        // Check attempts
+        if (otpRecord.attempts >= MAX_ATTEMPTS) {
+            await pool.query('DELETE FROM otps WHERE id = $1', [otpRecord.id]);
+            return NextResponse.json(
+                { error: 'Terlalu banyak percobaan. Kode OTP telah dinonaktifkan.' },
+                { status: 400 }
+            );
+        }
+
         // Check code
         if (otpRecord.code !== code) {
+            const newAttempts = (otpRecord.attempts || 0) + 1;
             await pool.query(
-                'UPDATE otps SET attempts = attempts + 1 WHERE id = $1',
-                [otpRecord.id]
+                'UPDATE otps SET attempts = $1 WHERE id = $2',
+                [newAttempts, otpRecord.id]
             );
+
+            const remaining = MAX_ATTEMPTS - newAttempts;
+            if (remaining <= 0) {
+                await pool.query('DELETE FROM otps WHERE id = $1', [otpRecord.id]);
+                return NextResponse.json(
+                    { error: 'Terlalu banyak percobaan. Kode OTP telah dinonaktifkan.' },
+                    { status: 400 }
+                );
+            }
+
             return NextResponse.json(
-                { error: 'Kode OTP salah' },
+                { error: `Kode OTP salah. Sisa percobaan: ${remaining}` },
                 { status: 400 }
             );
         }

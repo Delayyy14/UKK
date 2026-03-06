@@ -20,6 +20,14 @@ export async function POST(request: NextRequest) {
     }
 
     const peminjaman = peminjamanResult.rows[0];
+    const authenticatedUserId = request.headers.get('x-user-id');
+
+    if (!authenticatedUserId || peminjaman.user_id !== parseInt(authenticatedUserId)) {
+      return NextResponse.json(
+        { error: 'Forbidden: Ini bukan transaksi peminjaman Anda' },
+        { status: 403 }
+      );
+    }
 
     if (peminjaman.status === 'selesai') {
       return NextResponse.json(
@@ -59,7 +67,7 @@ export async function POST(request: NextRequest) {
     // Jika rusak_berat, tidak menambah jumlah_tersedia (barang perlu diperbaiki)
 
     await logActivity(
-      peminjaman.user_id,
+      parseInt(authenticatedUserId!),
       'RETURN',
       'pengembalian',
       pengembalian.id,

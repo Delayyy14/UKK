@@ -32,7 +32,7 @@ export async function PUT(
       );
     }
 
-    const userId = request.headers.get('authorization')?.replace('Bearer ', '') || null;
+    const userId = request.headers.get('x-user-id');
     await logActivity(
       userId ? parseInt(userId) : null,
       'UPDATE',
@@ -64,10 +64,8 @@ export async function DELETE(
   try {
     const targetUserId = parseInt(params.id);
 
-    // Ambil user login dari Authorization header
-    const loggedInUserId = request.headers
-      .get('authorization')
-      ?.replace('Bearer ', '');
+    // Ambil user login dari middleware
+    const loggedInUserId = request.headers.get('x-user-id');
 
     if (!loggedInUserId) {
       return NextResponse.json(

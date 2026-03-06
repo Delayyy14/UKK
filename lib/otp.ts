@@ -47,7 +47,15 @@ export async function verifyOTP(email: string, code: string) {
 
         // Check if expired
         if (new Date() > new Date(otpRecord.expires_at)) {
+            await pool.query('DELETE FROM otps WHERE id = $1', [otpRecord.id]);
             return { success: false, message: 'Kode OTP sudah kadaluwarsa' };
+        }
+
+        // Check attempts limit (e.g., 5 attempts)
+        const MAX_ATTEMPTS = 5;
+        if (otpRecord.attempts >= MAX_ATTEMPTS) {
+            await pool.query('DELETE FROM otps WHERE id = $1', [otpRecord.id]);
+            return { success: false, message: 'Terlalu banyak percobaan. Kode OTP telah dinonaktifkan. Silakan kirim ulang.' };
         }
 
         // Check code
@@ -57,7 +65,14 @@ export async function verifyOTP(email: string, code: string) {
                 'UPDATE otps SET attempts = attempts + 1 WHERE id = $1',
                 [otpRecord.id]
             );
-            return { success: false, message: 'Kode OTP salah' };
+
+            const remaining = MAX_ATTEMPTS - (otpRecord.attempts + 1);
+            if (remaining <= 0) {
+                await pool.query('DELETE FROM otps WHERE id = $1', [otpRecord.id]);
+                return { success: false, message: 'Terlalu banyak percobaan. Kode OTP telah dinonaktifkan.' };
+            }
+
+            return { success: false, message: `Kode OTP salah. Sisa percobaan: ${remaining}` };
         }
 
         // Success - mark user as verified and delete OTP

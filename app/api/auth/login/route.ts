@@ -27,9 +27,8 @@ export async function POST(request: NextRequest) {
     if (user.role === 'peminjam' && !user.is_verified) {
       return NextResponse.json(
         {
-          error: 'Email belum diverifikasi. Silakan verifikasi email Anda.',
+          error: 'Email belum diverifikasi. Silakan cek kotak masuk email Anda.',
           requireVerification: true,
-          email: user.email
         },
         { status: 403 }
       );

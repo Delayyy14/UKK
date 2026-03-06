@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { hashPassword } from '@/lib/auth';
 import { logActivity } from '@/lib/activityLog';
+import { sanitizeText } from '@/lib/sanitize';
 
 export async function GET(request: NextRequest) {
   try {
@@ -54,8 +55,12 @@ export async function PUT(request: NextRequest) {
 
     const { nama, email, password, foto } = await request.json();
 
+    // Sanitize inputs
+    const sanitizedNama = sanitizeText(nama);
+    const sanitizedEmail = sanitizeText(email || '');
+
     let query = 'UPDATE users SET nama = $1, email = $2, updated_at = CURRENT_TIMESTAMP';
-    const values: any[] = [nama, email || null];
+    const values: any[] = [sanitizedNama, sanitizedEmail || null];
     let paramIndex = 3;
 
     // Add foto if provided
@@ -93,7 +98,7 @@ export async function PUT(request: NextRequest) {
       'UPDATE',
       'users',
       userId,
-      { nama, email }
+      { nama: sanitizedNama, email: sanitizedEmail }
     );
 
 
