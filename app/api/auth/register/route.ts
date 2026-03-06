@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
-import { hashPassword } from '@/lib/auth';
+import { hashPassword, isValidPassword, isValidEmail } from '@/lib/auth';
 import { logActivity } from '@/lib/activityLog';
 import { generateOTP } from '@/lib/otp';
 import { sendOTPEmail } from '@/lib/mail';
@@ -17,9 +17,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (password.length < 6) {
+    if (!isValidEmail(email)) {
       return NextResponse.json(
-        { error: 'Password minimal 6 karakter' },
+        { error: 'Format email tidak valid' },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidPassword(password)) {
+      return NextResponse.json(
+        { error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial.' },
         { status: 400 }
       );
     }

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
-import { hashPassword } from '@/lib/auth';
+import { hashPassword, isValidPassword } from '@/lib/auth';
 import { logActivity } from '@/lib/activityLog';
+import { sanitizeText } from '@/lib/sanitize';
 
 export async function PUT(
   request: NextRequest,
@@ -9,12 +10,22 @@ export async function PUT(
 ) {
   try {
     const id = parseInt(params.id);
-    const { username, password, nama, email, role } = await request.json();
+    let { username, password, nama, email, role } = await request.json();
+
+    // Sanitize inputs
+    username = sanitizeText(username);
+    nama = sanitizeText(nama);
+    email = sanitizeText(email);
 
     let query = 'UPDATE users SET username = $1, nama = $2, email = $3, role = $4, updated_at = CURRENT_TIMESTAMP';
     const values: any[] = [username, nama, email, role];
 
     if (password) {
+      if (!isValidPassword(password)) {
+        return NextResponse.json({
+          error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial.'
+        }, { status: 400 });
+      }
       const hashedPassword = await hashPassword(password);
       query += ', password = $5 WHERE id = $6 RETURNING id, username, nama, email, role';
       values.push(hashedPassword, id);

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
-import { hashPassword } from '@/lib/auth';
+import { hashPassword, isValidPassword } from '@/lib/auth';
 import { logActivity } from '@/lib/activityLog';
 
 export async function POST(request: NextRequest) {
@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        if (newPassword.length < 6) {
+        if (newPassword.length < 8 || !isValidPassword(newPassword)) {
             return NextResponse.json(
-                { error: 'Password minimal 6 karakter' },
+                { error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial.' },
                 { status: 400 }
             );
         }

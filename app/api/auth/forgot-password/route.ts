@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { generateOTP } from '@/lib/otp';
 import { sendForgotPasswordEmail } from '@/lib/mail';
+import { isValidEmail } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
     try {
         const { email } = await request.json();
 
-        if (!email) {
+        if (!email || !isValidEmail(email)) {
             return NextResponse.json(
-                { error: 'Email wajib diisi' },
+                { error: 'Email tidak valid' },
                 { status: 400 }
             );
         }

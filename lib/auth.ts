@@ -28,6 +28,17 @@ export async function getUserByUsername(username: string): Promise<User | null> 
   return result.rows[0] || null;
 }
 
+export function isValidPassword(password: string): boolean {
+  // at least 8 characters, one letter, one number, and one special character
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+  return passwordRegex.test(password);
+}
+
+export function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 export async function verifyUser(username: string, password: string): Promise<User | null> {
   const result = await pool.query(
     'SELECT id, username, password, nama, email, foto, role, is_verified FROM users WHERE username = $1',

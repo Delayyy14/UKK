@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
-import { hashPassword } from '@/lib/auth';
+import { hashPassword, isValidPassword, isValidEmail } from '@/lib/auth';
 import { logActivity } from '@/lib/activityLog';
+import { sanitizeText } from '@/lib/sanitize';
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,7 +21,30 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password, nama, email, role } = await request.json();
+    let { username, password, nama, email, role } = await request.json();
+
+    // Sanitize inputs
+    username = sanitizeText(username);
+    nama = sanitizeText(nama);
+    email = sanitizeText(email);
+
+    const authenticatedUserId = request.headers.get('x-user-id');
+
+    // Validation
+    if (!username || !password || !nama || !email || !role) {
+      return NextResponse.json({ error: 'Semua field wajib diisi' }, { status: 400 });
+    }
+
+    if (!isValidEmail(email)) {
+      return NextResponse.json({ error: 'Format email tidak valid' }, { status: 400 });
+    }
+
+    if (!isValidPassword(password)) {
+      return NextResponse.json({
+        error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial.'
+      }, { status: 400 });
+    }
+
     const hashedPassword = await hashPassword(password);
 
     const result = await pool.query(
@@ -29,11 +53,10 @@ export async function POST(request: NextRequest) {
     );
 
     const user = result.rows[0];
-    const userId = request.headers.get('authorization')?.replace('Bearer ', '') || null;
 
     await logActivity(
-      userId ? parseInt(userId) : null,
-      'CREATE',
+      authenticatedUserId ? parseInt(authenticatedUserId) : null,
+      role === 'admin' ? 'CREATE_ADMIN' : 'CREATE_USER',
       'users',
       user.id,
       { username, role }

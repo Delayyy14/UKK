@@ -21,7 +21,9 @@ export async function middleware(request: NextRequest) {
     if (path.startsWith('/api/auth/login') ||
         path.startsWith('/api/auth/forgot-password') ||
         path.startsWith('/api/auth/reset-password') ||
-        path.startsWith('/api/auth/verify-otp')) {
+        path.startsWith('/api/auth/verify-otp') ||
+        path.startsWith('/api/auth/register') ||
+        path.startsWith('/api/auth/resend-otp')) {
 
         const authData = authRateLimitMap.get(ip);
         if (authData) {
@@ -126,6 +128,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+    runtime: 'nodejs',
     matcher: [
         '/api/:path*',
         '/admin/:path*',
