@@ -12,6 +12,15 @@ export async function PUT(
     const id = parseInt(params.id);
     let { username, password, nama, email, role } = await request.json();
 
+    const loggedInUserId = request.headers.get('x-user-id');
+
+    if (loggedInUserId && parseInt(loggedInUserId) === id) {
+      return NextResponse.json(
+        { error: 'Tidak boleh mengubah data sendiri melalui halaman admin' },
+        { status: 400 }
+      );
+    }
+
     // Sanitize inputs
     username = sanitizeText(username);
     nama = sanitizeText(nama);
@@ -23,7 +32,7 @@ export async function PUT(
     if (password) {
       if (!isValidPassword(password)) {
         return NextResponse.json({
-          error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial.'
+          error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial (seperti !, @, #, $, %, dll).'
         }, { status: 400 });
       }
       const hashedPassword = await hashPassword(password);

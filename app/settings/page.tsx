@@ -170,18 +170,18 @@ export default function SettingsPage() {
     <div className="flex gap-6 max-w-6xl">
 
       {/* CONTENT */}
-      <div className="flex-1 bg-white shadow rounded-lg p-6">
+      <div className="flex-1 bg-card text-card-foreground border border-border rounded-lg p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-6">Informasi Profil</h2>
 
         {/* FOTO PROFIL */}
         <div className="flex items-center gap-6 mb-6">
           <div className="relative">
-            <div className="w-28 h-28 rounded-full overflow-hidden border">
+            <div className="w-28 h-28 rounded-full overflow-hidden border border-border">
               {previewImage ? (
                 <img src={previewImage} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                  <User size={40} className="text-gray-400" />
+                <div className="w-full h-full flex items-center justify-center bg-secondary">
+                  <User size={40} className="text-muted-foreground" />
                 </div>
               )}
             </div>
@@ -199,10 +199,25 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <p className="font-medium text-gray-800">{formData.nama}</p>
-            <p className="text-sm text-gray-500">{formData.email}</p>
+            <p className="font-medium text-foreground">{formData.nama}</p>
+            <p className="text-sm text-muted-foreground">{formData.email}</p>
           </div>
         </div>
+
+        {errorMessage && (
+          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-md text-sm border border-red-200 flex items-start gap-2">
+            <div>
+              <span className="font-semibold block mb-1">Terjadi Kesalahan</span>
+              {errorMessage}
+            </div>
+          </div>
+        )}
+        
+        {successMessage && (
+          <div className="mb-6 p-4 bg-green-50 text-green-600 rounded-md text-sm border border-green-200">
+            {successMessage}
+          </div>
+        )}
 
         {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -214,7 +229,7 @@ export default function SettingsPage() {
               type="text"
               value={formData.nama}
               onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-              className="w-full border rounded px-4 py-2 mt-1 focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-input bg-background rounded px-4 py-2 mt-1 focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
             />
           </div>
 
@@ -225,7 +240,7 @@ export default function SettingsPage() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full border rounded px-4 py-2 mt-1 focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-input bg-background rounded px-4 py-2 mt-1 focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
             />
           </div>
 
@@ -237,7 +252,7 @@ export default function SettingsPage() {
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full border rounded px-4 py-2 mt-1 pr-10"
+                className="w-full border border-input bg-background rounded px-4 py-2 mt-1 pr-10 focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               />
               <button
                 type="button"
@@ -255,7 +270,7 @@ export default function SettingsPage() {
             <input
               disabled
               value={user?.username}
-              className="w-full border rounded px-4 py-2 mt-1 bg-gray-100"
+              className="w-full border border-input rounded px-4 py-2 mt-1 bg-secondary text-muted-foreground"
             />
           </div>
 
@@ -265,7 +280,7 @@ export default function SettingsPage() {
             <input
               disabled
               value={user?.role}
-              className="w-full border rounded px-4 py-2 mt-1 bg-gray-100"
+              className="w-full border border-input rounded px-4 py-2 mt-1 bg-secondary text-muted-foreground"
             />
           </div>
 
@@ -274,7 +289,7 @@ export default function SettingsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+              className="bg-primary text-primary-foreground px-6 py-2 rounded hover:bg-primary/90 transition-colors"
             >
               {saving ? "Menyimpan..." : "Simpan"}
             </button>
@@ -282,7 +297,7 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="bg-gray-200 px-6 py-2 rounded"
+              className="bg-secondary text-secondary-foreground px-6 py-2 rounded hover:bg-secondary/80 transition-colors"
             >
               Batal
             </button>

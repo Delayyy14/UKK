@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { SidebarContent } from './Sidebar';
+import { ThemeToggle } from './ThemeToggle';
 import { useState } from 'react';
 
 interface NavbarProps {
@@ -95,6 +96,8 @@ export default function Navbar({ userName, userRole, userFoto }: NavbarProps) {
 
         {/* Right Side - Actions & Profile */}
         <div className="flex items-center gap-2 md:gap-4">
+            <ThemeToggle />
+            
             <Button variant="outline" size="sm" asChild className="hidden md:flex gap-2">
                 <Link href="/">
                     <Home className="h-4 w-4" />

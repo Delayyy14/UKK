@@ -90,7 +90,7 @@ export async function PUT(request: NextRequest) {
     if (password) {
       if (!isValidPassword(password)) {
         return NextResponse.json({
-          error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial.'
+          error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial (seperti !, @, #, $, %, dll).'
         }, { status: 400 });
       }
       const hashedPassword = await hashPassword(password);

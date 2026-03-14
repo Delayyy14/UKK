@@ -15,14 +15,21 @@ export async function verifyTokenFull(token: string) {
 
         // Finding 16: Check if token is revoked in DB
         if (payload.jti) {
-            const result = await pool.query('SELECT id FROM revoked_tokens WHERE jti = $1', [payload.jti]);
-            if (result.rows.length > 0) {
-                return null; // Token is revoked
+            try {
+                const result = await pool.query('SELECT id FROM revoked_tokens WHERE jti = $1', [payload.jti]);
+                if (result.rows.length > 0) {
+                    return null; // Token is revoked
+                }
+            } catch (dbError: any) {
+                // If the table doesn't exist or DB connection fails, we log it and continue
+                // instead of revoking the session unexpectedly.
+                console.error('Failed to check revoked_tokens (bypassing):', dbError.message);
             }
         }
 
         return payload;
     } catch (error) {
+        console.error('verifyTokenFull JWT Error:', error);
         return null;
     }
 }

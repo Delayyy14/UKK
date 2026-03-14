@@ -133,22 +133,22 @@ export function SidebarContent({ userRole, onItemClick }: SidebarProps & { onIte
   const sections = userRole === 'admin' ? adminMenu : userRole === 'petugas' ? petugasMenu : peminjamMenu;
 
   return (
-    <div className="flex flex-col h-full bg-white text-black/80">
-      <div className="flex h-16 items-center px-6 border-b border-zinc-100">
-        <h2 className="text-xl font-black tracking-tight flex items-center gap-2 text-zinc-900">
-          <div className="bg-blue-600 p-1.5 rounded-lg">
-            <Package className="h-5 w-5 text-white" />
+    <div className="flex flex-col h-full bg-background text-foreground/80">
+      <div className="flex h-16 items-center px-6 border-b border-border">
+        <h2 className="text-xl font-black tracking-tight flex items-center gap-2 text-foreground">
+          <div className="bg-primary p-1.5 rounded-lg">
+            <Package className="h-5 w-5 text-primary-foreground" />
           </div>
           <span>PinjamAlat</span>
         </h2>
       </div>
       
-      <div className="flex-1 overflow-y-auto py-6 px-4 scrollbar-thin scrollbar-thumb-zinc-200">
+      <div className="flex-1 overflow-y-auto py-6 px-4 scrollbar-thin scrollbar-thumb-muted">
         <div className="space-y-7">
           {sections.map((section, idx) => (
             <div key={idx} className="space-y-2">
               {section.title && (
-                <h3 className="px-3 text-[10px] font-bold tracking-[0.15em] text-zinc-400 uppercase">
+                <h3 className="px-3 text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">
                   {section.title}
                 </h3>
               )}
@@ -163,15 +163,15 @@ export function SidebarContent({ userRole, onItemClick }: SidebarProps & { onIte
                       className={cn(
                         "w-full justify-start gap-3 h-10 px-3 transition-all duration-200 font-semibold",
                         isActive 
-                          ? "bg-blue-50 text-blue-600 hover:bg-blue-50 hover:text-blue-600 shadow-sm"
-                          : "text-black/80 hover:bg-zinc-100 hover:text-black"
+                          ? "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary shadow-sm"
+                          : "text-foreground/80 hover:bg-accent hover:text-accent-foreground"
                       )}
                       onClick={() => {
                         router.push(item.path);
                         if (onItemClick) onItemClick();
                       }}
                     >
-                      <Icon className={cn("h-[18px] w-[18px]", isActive ? "text-blue-600" : "text-zinc-500")} />
+                      <Icon className={cn("h-[18px] w-[18px]", isActive ? "text-primary" : "text-muted-foreground")} />
                       {item.name}
                     </Button>
                   );
@@ -187,7 +187,7 @@ export function SidebarContent({ userRole, onItemClick }: SidebarProps & { onIte
 
 export default function Sidebar({ userRole }: SidebarProps) {
   return (
-    <div className="no-print border-r border-zinc-100 bg-white w-64 h-screen fixed left-0 top-0 hidden md:block z-50 shadow-sm">
+    <div className="no-print border-r border-border bg-background w-64 h-screen fixed left-0 top-0 hidden md:block z-50 shadow-sm">
       <SidebarContent userRole={userRole} />
     </div>
   );

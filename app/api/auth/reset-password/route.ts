@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
         if (newPassword.length < 8 || !isValidPassword(newPassword)) {
             return NextResponse.json(
-                { error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial.' },
+                { error: 'Password tidak aman: minimal 8 karakter, harus mengandung huruf, angka, dan karakter spesial (seperti !, @, #, $, %, dll).' },
                 { status: 400 }
             );
         }

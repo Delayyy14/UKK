@@ -11,21 +11,30 @@ export const metadata: Metadata = {
   description: 'Sistem manajemen peminjaman alat',
 }
 
+import { ThemeProvider } from '@/components/ThemeProvider'
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
       <body className={inter.className}>
-        {children}
-        <Toaster />
-        <Script 
-          src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" 
-          strategy="lazyOnload"
-          type="module"
-        />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+          <Script 
+            src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" 
+            strategy="lazyOnload"
+            type="module"
+          />
+        </ThemeProvider>
       </body>
     </html>
   )
