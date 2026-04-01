@@ -83,9 +83,9 @@ export default function ProductCard({ item }: ProductCardProps) {
       <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Login Diperlukan</DialogTitle>
+            <DialogTitle>Eits, Login dulu yuk!</DialogTitle>
             <DialogDescription>
-              Anda harus login terlebih dahulu untuk melakukan booking alat.
+              Kamu harus login terlebih dahulu untuk melakukan booking alat.
             </DialogDescription>
           </DialogHeader>
           <div className="flex items-center space-x-2 py-4 justify-center">

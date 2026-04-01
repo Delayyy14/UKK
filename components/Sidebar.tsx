@@ -19,6 +19,7 @@ import {
   HelpCircle,
   Newspaper,
   Tag,
+  Image,
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ export function SidebarContent({ userRole, onItemClick }: SidebarProps & { onIte
         { name: 'Kategori Alat', path: '/admin/kategori', icon: FolderOpen },
         { name: 'Manajemen Berita', path: '/admin/berita', icon: Newspaper },
         { name: 'Kategori Berita', path: '/admin/berita/kategori', icon: Tag },
+        { name: 'Manajemen Banners', path: '/admin/banners', icon: Image }
       ]
     },
     {

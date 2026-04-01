@@ -8,7 +8,7 @@ import { ArrowRight, CheckCircle, Clock, Shield, MapPin, Users, Package, Calenda
 import pool from '@/lib/db';
 import ProductCard from '@/components/ProductCard';
 import BeritaCard from '@/components/BeritaCard';
-
+import HeroSection from '@/components/HeroSection';
 const ContactSection = dynamicImport(() => import('@/components/ContactSection'), { ssr: false });
 const TestimonialSection = dynamicImport(() => import('@/components/TestimonialSection'), { ssr: false });
 const Footer = dynamicImport(() => import('@/components/Footer'), { ssr: false });
@@ -63,69 +63,8 @@ export default async function LandingPage() {
       </div>
 
       <MainNavbar />
-      
       {/* Hero Section */}
-      <section className="relative min-h-[95vh] flex items-center justify-center px-6 md:px-12 lg:px-24 pt-32 pb-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
-          
-          {/* Left Column: Text */}
-          <div className="flex flex-col items-start text-left space-y-8 animate-in slide-in-from-left-8 duration-1000 z-10">
-
-            <h1 className="text-5xl md:text-7xl lg:text-7xl font-serif font-medium tracking-tight text-gray-900 leading-[1.1]">
-              Eksplorasi Alam Tanpa <br className="hidden lg:block"/>
-              <span className="italic text-transparent bg-clip-text bg-blue-600">Batas & Kendala</span>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-xl font-light leading-relaxed">
-              Lengkapi petualanganmu dengan peralatan pendakian kualitas premium. 
-              Booking online, ambil di lokasi, dan nikmati perjalananmu dengan tenang.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 w-full sm:w-auto">
-              <Button size="lg" className="rounded-full px-10 h-14 text-lg bg-gray-900 text-white hover:bg-gray-800 transition-all font-medium w-full sm:w-auto shadow-xl hover:shadow-2xl hover:-translate-y-1" asChild>
-                <Link href="/products">
-                  Mulai Pinjam Sekarang <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button variant="outline" size="lg" className="rounded-full px-10 h-14 text-lg border-gray-200 hover:bg-gray-50 font-medium w-full sm:w-auto" asChild>
-                <Link href="#how-it-works">Cara Kerja</Link>
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-4 pt-6">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-gray-200 overflow-hidden relative">
-                    <Image 
-                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=User${i}`} 
-                      alt="user" 
-                      width={40}
-                      height={40}
-                    />
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-gray-500 font-medium">
-                <span className="text-gray-900 font-bold">500+</span> Pendaki telah bergabung
-              </p>
-            </div>
-          </div>
-
-          {/* Right Column: Image - HIDDEN ON MOBILE */}
-          <div className="relative w-full rounded-3xl overflow-hidden aspect-square lg:aspect-auto lg:h-[600px] hidden lg:flex items-center justify-center animate-in slide-in-from-right-8 duration-1000 delay-200 z-10">
-
-  {/* Decorative blob */}
-  <div className="absolute inset-0 bg-gradient-to-tr from-blue-200/40 to-purple-200/40 blur-[100px] transform scale-110 animate-pulse" />
-
-  <Image 
-    src="/images/person/hiking-image.jpeg" 
-    alt="Hiking Image" 
-    fill
-    priority
-    className="object-cover drop-shadow-2xl relative z-20 hover:scale-105 transition-transform duration-700"
-    sizes="(min-width: 1024px) 50vw, 100vw"
-  />
-</div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* Stats Section */}
       <section className="py-12 px-6 bg-white/40 border-y border-gray-100 backdrop-blur-sm relative z-10">
@@ -151,7 +90,6 @@ export default async function LandingPage() {
       <section id="features" className="relative py-24 px-6 md:px-12 lg:px-24">
         <div className="text-center mb-16 relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-gray-900">Mengapa Harus Di Sini?</h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto italic font-light">Kami memahami setiap langkah pendakianmu berharga.</p>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto relative z-10">
@@ -202,7 +140,6 @@ export default async function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div className="space-y-8 order-2 lg:order-1">
               <div className="space-y-2">
-                <Badge className="bg-blue-600">Step by Step</Badge>
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900">Bagaimana Cara Memulainya?</h2>
                 <p className="text-gray-500 font-light text-lg">Hanya butuh 4 langkah mudah untuk mendapatkan peralatan impianmu.</p>
               </div>
@@ -240,18 +177,6 @@ export default async function LandingPage() {
                     </div>
                     <h3 className="text-3xl font-bold uppercase tracking-tighter">Your Adventure Starts Here</h3>
                     <p className="text-blue-100 font-light">Kami temani langkahmu sampai puncak tertinggi.</p>
-                  </div>
-               </div>
-               {/* Floating elements */}
-               <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 hidden md:block">
-                  <div className="flex items-center gap-4">
-                    <div className="bg-green-100 text-green-600 p-2 rounded-lg">
-                      <CheckCircle size={24} />
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Mari Menjelajah</p>
-                      <p className="text-sm font-black text-gray-900">Persiapkan Diri Anda!</p>
-                    </div>
                   </div>
                </div>
             </div>
