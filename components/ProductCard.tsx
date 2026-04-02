@@ -37,7 +37,7 @@ export default function ProductCard({ item }: ProductCardProps) {
 
   return (
     <>
-      <Card className="overflow-hidden group hover:shadow-lg transition-all border-none shadow-sm bg-card/50">
+      <Card className="overflow-hidden group hover:shadow-lg transition-all border-none shadow-sm bg-white relative z-10">
         <div className="aspect-video bg-muted relative overflow-hidden rounded-t-lg">
           {item.foto ? (
             <Image 

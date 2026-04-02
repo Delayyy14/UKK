@@ -10,7 +10,7 @@ const testimonials = [
     badge: "Pelanggan Setia",
     content:
       "Sewa tenda dan carrier di sini gampang banget! Barangnya bersih, wangi, dan kondisinya masih sangat bagus. Siap buat nanjak lagi!",
-    variant: "dark" as const,
+    variant: "light" as const,
   },
   {
     name: "Siti Nurhaliza",
@@ -26,21 +26,11 @@ const testimonials = [
     badge: "Kalcer Boys",
     content:
       "Pelayanan ramah dan proses pengambilannya cepat. Ga perlu ribet nunggu lama. Fix jadi langganan buat trip selanjutnya.",
-    variant: "muted" as const,
+    variant: "light" as const,
   },
 ];
 
 const variantStyles = {
-  dark: {
-    card: "bg-[#2563eb] text-white", // Vibrant Royal Blue
-    quote: "text-white/20",
-    star: "text-yellow-400",
-    text: "text-blue-50",
-    avatar: "bg-white text-[#2563eb]",
-    name: "text-white",
-    badge: "text-blue-200",
-    border: "border-transparent"
-  },
   light: {
     card: "bg-white text-[#1e293b] border border-blue-100",
     quote: "text-blue-600/10",
@@ -50,16 +40,6 @@ const variantStyles = {
     name: "text-slate-900",
     badge: "text-blue-600",
     border: "border-blue-100"
-  },
-  muted: {
-    card: "bg-[#eff6ff] text-[#1e293b]", // Very light blue tint
-    quote: "text-blue-600/10",
-    star: "text-yellow-400",
-    text: "text-slate-600",
-    avatar: "bg-blue-100 text-blue-700",
-    name: "text-slate-900",
-    badge: "text-blue-500",
-    border: "border-transparent"
   },
 };
 

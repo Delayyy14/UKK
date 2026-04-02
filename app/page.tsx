@@ -11,6 +11,7 @@ import BeritaCard from '@/components/BeritaCard';
 import HeroSection from '@/components/HeroSection';
 const ContactSection = dynamicImport(() => import('@/components/ContactSection'), { ssr: false });
 const TestimonialSection = dynamicImport(() => import('@/components/TestimonialSection'), { ssr: false });
+const InstagramGallery = dynamicImport(() => import('@/components/InstagramGallery'), { ssr: false });
 const Footer = dynamicImport(() => import('@/components/Footer'), { ssr: false });
 
 async function getFeaturedProducts() {
@@ -96,13 +97,13 @@ export default async function LandingPage() {
             <div className="space-y-8">
               <div className="space-y-6">
                 <p className="text-gray-600 text-lg leading-relaxed font-medium">
-                  Didirikan untuk memudahkan para petualang, PinjamLe adalah platform penyewaan alat outdoor yang bercita-cita memberikan pengalaman mendaki terbaik bagi semua orang.
+                  Berawal dari proyek sekolah UKK untuk tugas portfolio, PinjamLe lahir dari visi untuk mempermudah akses alat outdoor berkualitas bagi para petualang.
                 </p>
                 <p className="text-gray-600 text-lg leading-relaxed font-medium">
-                  Seperti konsep platform kami, kami ingin mempermudah akses ke peralatan berkualitas tinggi, kuat, dan terpercaya. Kami ingin kehadiran kami bisa meningkatkan semangat eksplorasi dalam komunitas pendaki kita.
+                  Berawal dari proyek sekolah UKK untuk portofolio, PinjamLe lahir sebagai solusi untuk mempermudah para petualang mengakses peralatan outdoor berkualitas tinggi, kuat, dan terpercaya.
                 </p>
                 <p className="text-gray-600 text-lg leading-relaxed font-medium">
-                  Dengan sistem yang terintegrasi dan pengalaman di lapangan, kami memberikan layanan penyewaan yang tidak hanya sekadar transaksi, tapi sebuah awal dari petualangan hebat di alam bebas.
+                  Kami berkomitmen memberikan peralatan pendakian terbaik, kuat, dan terpercaya, serta terus berinovasi untuk mendukung semangat eksplorasi di komunitas pendaki.
                 </p>
               </div>
             </div>
@@ -139,22 +140,17 @@ export default async function LandingPage() {
               </div>
             </div>
 
-            <div className="relative order-1 lg:order-2">
-               <div className="aspect-square rounded-[60px] bg-gradient-to-br from-blue-600 to-purple-700 shadow-2xl overflow-hidden relative group">
+            <div className="relative order-1 lg:order-2 flex justify-start">
+               <div className="aspect-[4/5] w-full max-w-lg rounded-r-[120px] overflow-hidden relative">
                   <Image 
                     src="https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070&auto=format&fit=crop" 
                     alt="Adventure Background" 
                     fill 
-                    className="object-cover mix-blend-overlay opacity-60 group-hover:scale-110 transition-transform duration-700"
+                    className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-12 text-center space-y-4">
-                    <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center mb-4">
-                      <ArrowRight className="w-10 h-10 rotate-[-45deg]" />
-                    </div>
-                    <h3 className="text-3xl font-bold uppercase tracking-tighter">Your Adventure Starts Here</h3>
-                    <p className="text-blue-100 font-light">Kami temani langkahmu sampai puncak tertinggi.</p>
-                  </div>
+                  {/* Left Side Fade Effect */}
+                  <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-gray-50 via-gray-50/40 to-transparent z-10" />
                </div>
             </div>
           </div>
@@ -162,72 +158,101 @@ export default async function LandingPage() {
       </section>
 
       {/* Product Preview Section */}
-      <section className="relative py-32 px-6 md:px-12 lg:px-24 bg-white overflow-hidden">
-        <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-16 max-w-7xl mx-auto gap-4 relative z-10">
-          <div className="space-y-2">
-            <h2 className="text-4xl md:text-6xl font-black text-blue-600 tracking-tighter uppercase">Peralatan Pilihan</h2>
-            <p className="text-gray-500 text-lg font-medium tracking-wide">Gear berkualitas untuk petualangan tanpa batas.</p>
-          </div>
-
-          <Button size="lg" variant="ghost" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 group font-bold">
-            <Link href="/products" className="flex items-center">
-              Lihat Semua Katalog <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
-            </Link>
-          </Button>
+      <section className="relative py-32 bg-white overflow-hidden">
+        {/* Background Decorative Elements */}
+        <div className="absolute -top-10 -right-10 w-[450px] h-[450px] opacity-20 pointer-events-none z-0">
+          <Image 
+            src="/images/illustration/Group-2.png" 
+            alt="Decoration Top Right" 
+            fill 
+            className="object-contain select-none"
+          />
+        </div>
+        <div className="absolute -bottom-10 -left-10 w-[450px] h-[450px] opacity-20 pointer-events-none z-0">
+          <Image 
+            src="/images/illustration/Group-2.png" 
+            alt="Decoration Bottom Left" 
+            fill 
+            className="object-contain rotate-180 select-none"
+          />
         </div>
 
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
-          {products.length > 0 ? (
-            products.map((item: any) => (
-              <ProductCard key={item.id} item={item} />
-            ))
-          ) : (
-            <div className="col-span-3 text-center py-24 rounded-3xl bg-gray-50 border border-dashed border-gray-200">
-              <div className="text-gray-300 mb-2">
-                <Package size={48} className="mx-auto opacity-20 mb-4" />
-              </div>
-              <p className="text-gray-400 font-medium">Belum ada data alat saat ini.</p>
-              <p className="text-xs text-gray-400 mt-1 italic">Silakan hubungi kami untuk ketersediaan manual.</p>
+        <div className="px-6 md:px-12 lg:px-24">
+          <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-16 max-w-7xl mx-auto gap-4 relative z-10">
+            <div className="space-y-2">
+              <h2 className="text-4xl md:text-6xl font-black text-blue-600 tracking-tighter uppercase">Peralatan Pilihan</h2>
+              <p className="text-gray-500 text-lg font-medium tracking-wide">Gear berkualitas untuk petualangan tanpa batas.</p>
             </div>
-          )}
+
+            <Button size="lg" variant="ghost" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 group font-bold">
+              <Link href="/products" className="flex items-center">
+                Lihat Semua Katalog <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              </Link>
+            </Button>
+          </div>
+
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto relative z-10">
+            {products.length > 0 ? (
+              products.map((item: any) => (
+                <ProductCard key={item.id} item={item} />
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-24 rounded-3xl bg-gray-50 border border-dashed border-gray-200">
+                <div className="text-gray-300 mb-2">
+                  <Package size={48} className="mx-auto opacity-20 mb-4" />
+                </div>
+                <p className="text-gray-400 font-medium">Belum ada data alat saat ini.</p>
+                <p className="text-xs text-gray-400 mt-1 italic">Silakan hubungi kami untuk ketersediaan manual.</p>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
 {/* News Preview Section */}
-      <section className="relative py-32 px-6 md:px-12 lg:px-24 bg-gray-50/10">
-        <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-20 max-w-7xl mx-auto gap-4">
-          <div className="space-y-2">
-            <h2 className="text-4xl md:text-6xl font-black text-blue-600 tracking-tighter uppercase">Berita Terbaru</h2>
-          </div>
-
-          <Button size="lg" variant="ghost" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 group font-bold">
-            <Link href="/berita" className="flex items-center">
-              Lihat Semua Berita <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
-            </Link>
-          </Button>
+      <section className="relative py-40 bg-gray-50/10 overflow-hidden">
+        {/* Background Text Effect (Fore News Style) */}
+        <div className="absolute top-10 left-0 w-full whitespace-nowrap opacity-[0.1] select-none pointer-events-none">
+          <h2 className="text-[120px] md:text-[200px] font-black tracking-tighter text-transparent" style={{ WebkitTextStroke: '3px #2563eb' }}>
+            BERITA
+          </h2>
         </div>
 
+        <div className="px-6 md:px-12 lg:px-24 relative z-10">
+          <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-24 max-w-7xl mx-auto gap-12">
+            <div className="space-y-2">
+              <h2 className="text-6xl md:text-8xl font-black text-blue-600 tracking-tighter leading-none">Berita<br/>Terbaru</h2>
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {news.length > 0 ? (
-            news.map((item: any) => (
-              <BeritaCard key={item.id} item={item} />
-            ))
-          ) : (
-             <div className="col-span-3 text-center py-20 rounded-[40px] bg-gray-50 border border-dashed border-gray-200">
-                <Newspaper size={48} className="mx-auto opacity-10 mb-4" />
-                <p className="text-gray-400 font-medium italic">Belum ada berita terbaru saat ini.</p>
-             </div>
-          )}
+            <div className="md:text-right max-w-md">
+              <p className="text-gray-400 text-xl md:text-2xl font-medium leading-relaxed">
+                Dapatkan berita terbaru dan informasi menarik dari kami!
+              </p>
+            </div>
+          </div>
+
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {news.length > 0 ? (
+              news.map((item: any) => (
+                <BeritaCard key={item.id} item={item} />
+              ))
+            ) : (
+               <div className="col-span-3 text-center py-20 rounded-[40px] bg-gray-50 border border-dashed border-gray-200">
+                  <Newspaper size={48} className="mx-auto opacity-10 mb-4" />
+                  <p className="text-gray-400 font-medium italic">Belum ada berita terbaru saat ini.</p>
+               </div>
+            )}
+          </div>
         </div>
       </section>
 
       {/* Testimonial Section */}
       <TestimonialSection />
 
-
-      
+      {/* Instagram Gallery Section */}
+      <InstagramGallery />
 
       {/* Contact Section */}
       <ContactSection />
