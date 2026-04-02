@@ -66,73 +66,50 @@ export default async function LandingPage() {
       {/* Hero Section */}
       <HeroSection />
 
-      {/* Stats Section */}
-      <section className="py-12 px-6 bg-white/40 border-y border-gray-100 backdrop-blur-sm relative z-10">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { label: 'Total Alat', value: '150+', icon: Package },
-              { label: 'Peminjam Aktif', value: '450+', icon: Users },
-              { label: 'Transaksi Sukses', value: '1.2K', icon: CheckCircle },
-              { label: 'Kepuasan Peminjam', value: '4.9/5', icon: Heart },
-            ].map((stat, i) => (
-              <div key={i} className="text-center space-y-2">
-                <div className="flex justify-center">
-                  <stat.icon className="h-5 w-5 text-blue-600/50" />
-                </div>
-                <div className="text-3xl font-black text-gray-900">{stat.value}</div>
-                <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">{stat.label}</div>
+      {/* About / Introduction Section (Replacing Features) */}
+      <section id="about" className="relative py-32 px-6 md:px-12 lg:px-24 bg-white overflow-hidden">
+        {/* Background Text Effect (Fore Coffee Style) */}
+        <div className="absolute top-5 left-0 w-full whitespace-nowrap opacity-[0.05] select-none pointer-events-none">
+          <h2 className="text-[120px] md:text-[200px] font-black tracking-tighter text-transparent" style={{ WebkitTextStroke: '3px #2563eb' }}>
+            PinjamLe PinjamLe PinjamLe PinjamLe
+          </h2>
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="mb-12 relative">
+             <h2 className="text-6xl md:text-8xl font-black text-blue-600 tracking-tighter">PINJAMLE</h2>
+          </div>
+          
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="relative">
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <Image 
+                  src="/images/illustration/Logo-bg.png" 
+                  alt="PinjamLe Logo" 
+                  fill 
+                  className="object-contain transition-transform duration-700 hover:scale-105"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
               </div>
-            ))}
+            </div>
+
+            <div className="space-y-8">
+              <div className="space-y-6">
+                <p className="text-gray-600 text-lg leading-relaxed font-medium">
+                  Didirikan untuk memudahkan para petualang, PinjamLe adalah platform penyewaan alat outdoor yang bercita-cita memberikan pengalaman mendaki terbaik bagi semua orang.
+                </p>
+                <p className="text-gray-600 text-lg leading-relaxed font-medium">
+                  Seperti konsep platform kami, kami ingin mempermudah akses ke peralatan berkualitas tinggi, kuat, dan terpercaya. Kami ingin kehadiran kami bisa meningkatkan semangat eksplorasi dalam komunitas pendaki kita.
+                </p>
+                <p className="text-gray-600 text-lg leading-relaxed font-medium">
+                  Dengan sistem yang terintegrasi dan pengalaman di lapangan, kami memberikan layanan penyewaan yang tidak hanya sekadar transaksi, tapi sebuah awal dari petualangan hebat di alam bebas.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="relative py-24 px-6 md:px-12 lg:px-24">
-        <div className="text-center mb-16 relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-gray-900">Mengapa Harus Di Sini?</h2>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto relative z-10">
-          {[
-            {
-              icon: Clock,
-              title: "Serba Instan",
-              desc: "Proses cepat tanpa ribet manual. Klik, bayar, berangkat.",
-              color: "text-blue-600",
-              bg: "bg-blue-50"
-            },
-            {
-              icon: Shield,
-              title: "Kualitas Terjamin",
-              desc: "Alat disterilkan & diperiksa kondisinya sebelum dipinjamkan.",
-              color: "text-purple-600",
-              bg: "bg-purple-50"
-            },
-            {
-              icon: CheckCircle,
-              title: "Stok Akurat",
-              desc: "Data stok real-time, tidak perlu takut alat habis saat di toko.",
-              color: "text-pink-600",
-              bg: "bg-pink-50"
-            },
-            {
-              icon: MapPin,
-              title: "Lokasi Strategis",
-              desc: "Dekat dengan jalur utama pendakian, mudah diakses kendaraan.",
-              color: "text-indigo-600",
-              bg: "bg-indigo-50"
-            }
-          ].map((feature, i) => (
-            <div key={i} className="group p-8 rounded-[40px] bg-white border border-gray-100 shadow-sm hover:shadow-2xl hover:border-blue-100 hover:-translate-y-2 transition-all duration-500">
-              <div className={`w-16 h-16 rounded-3xl ${feature.bg} flex items-center justify-center mb-8 ${feature.color} group-hover:rotate-12 transition-all duration-500 shadow-inner`}>
-                <feature.icon className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed font-medium">{feature.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* How it Works Section */}
       <section id="how-it-works" className="relative py-24 px-6 md:px-12 lg:px-24 bg-gray-50/50 backdrop-blur-sm">
@@ -185,11 +162,11 @@ export default async function LandingPage() {
       </section>
 
       {/* Product Preview Section */}
-      <section className="relative py-32 px-6 md:px-12 lg:px-24 bg-white">
-        <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-16 max-w-7xl mx-auto gap-4">
+      <section className="relative py-32 px-6 md:px-12 lg:px-24 bg-white overflow-hidden">
+        <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-16 max-w-7xl mx-auto gap-4 relative z-10">
           <div className="space-y-2">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">Peralatan Pilihan</h2>
-            <p className="text-gray-500 text-lg font-light tracking-wide italic">"Quality tools for quality hike."</p>
+            <h2 className="text-4xl md:text-6xl font-black text-blue-600 tracking-tighter uppercase">Peralatan Pilihan</h2>
+            <p className="text-gray-500 text-lg font-medium tracking-wide">Gear berkualitas untuk petualangan tanpa batas.</p>
           </div>
 
           <Button size="lg" variant="ghost" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 group font-bold">
@@ -198,6 +175,7 @@ export default async function LandingPage() {
             </Link>
           </Button>
         </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
           {products.length > 0 ? (
@@ -217,11 +195,10 @@ export default async function LandingPage() {
       </section>
 
 {/* News Preview Section */}
-      <section className="relative py-32 px-6 md:px-12 lg:px-24 bg-gray-50/30">
-        <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-16 max-w-7xl mx-auto gap-4">
+      <section className="relative py-32 px-6 md:px-12 lg:px-24 bg-gray-50/10">
+        <div className="flex flex-col items-start md:flex-row justify-between md:items-end mb-20 max-w-7xl mx-auto gap-4">
           <div className="space-y-2">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">Berita Terbaru</h2>
-            <p className="text-gray-500 text-lg font-light tracking-wide italic">"Stay updated with our latest stories."</p>
+            <h2 className="text-4xl md:text-6xl font-black text-blue-600 tracking-tighter uppercase">Berita Terbaru</h2>
           </div>
 
           <Button size="lg" variant="ghost" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 group font-bold">
@@ -230,6 +207,7 @@ export default async function LandingPage() {
             </Link>
           </Button>
         </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {news.length > 0 ? (

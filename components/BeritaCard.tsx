@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Newspaper } from 'lucide-react';
+import { Newspaper, User, Calendar } from 'lucide-react';
 
 interface Berita {
   id: number;
@@ -17,46 +17,74 @@ interface Berita {
 }
 
 export default function BeritaCard({ item }: { item: Berita }) {
+  const formattedDate = new Date(item.created_at).toLocaleDateString('id-ID', { 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric' 
+  });
+
   return (
     <Link 
       href={`/berita/${item.slug || item.id}`}
-      className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col h-full border border-zinc-100"
+      className="group flex flex-col h-full bg-white rounded-[40px] p-6 shadow-xl shadow-gray-100/50 border border-gray-50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
     >
-      <div className="relative aspect-[16/10] overflow-hidden bg-zinc-50">
-        {item.foto ? (
-          <Image 
-            src={item.foto} 
-            alt={item.judul} 
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Newspaper className="h-10 w-10 text-zinc-200" />
-          </div>
-        )}
+      {/* Image Container */}
+      <div className="relative aspect-[4/3] mb-6">
+        <div className="w-full h-full rounded-[30px] overflow-hidden relative shadow-sm group-hover:shadow-lg transition-all duration-500">
+          {item.foto ? (
+            <Image 
+              src={item.foto} 
+              alt={item.judul} 
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-200">
+              <Newspaper className="h-16 w-16" />
+            </div>
+          )}
+        </div>
         
-        {/* Category Badge */}
-        <div className="absolute top-4 left-4">
-           <span className="px-2 py-1 bg-white/95 backdrop-blur-sm rounded-lg text-[10px] font-bold uppercase tracking-wider text-zinc-900 border border-zinc-200/50">
-              {item.kategori_nama || item.kategori || 'Berita'}
-           </span>
+        {/* Overlapping Date Badge */}
+        <div className="absolute -bottom-6 left-6 bg-white rounded-xl shadow-lg px-6 py-4 border border-gray-50 z-20">
+          <p className="text-sm font-black text-gray-900 whitespace-nowrap">
+            {item.kategori_nama}
+          </p>
         </div>
       </div>
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className="text-base font-bold text-zinc-900 mb-3 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+
+      {/* Content Area */}
+      <div className="pt-8 px-2 flex flex-col flex-1">
+        {/* Author Line */}
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-8 h-8 rounded-full overflow-hidden relative border border-blue-100 bg-white/50 backdrop-blur-sm shadow-inner">
+            <Image 
+              src="/images/illustration/Logo-bg.png" 
+              alt={item.penulis || 'Author'} 
+              fill 
+              className="object-contain p-1.5 transition-transform duration-500 group-hover:scale-110"
+            />
+          </div>
+          <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+            BY {item.penulis || 'ADMIN'}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-xl font-black text-gray-900 mb-4 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
           {item.judul}
         </h3>
-        <p className="text-xs text-zinc-400 mt-auto">
-          {new Date(item.created_at).toLocaleDateString('id-ID', { 
-            weekday: 'long', 
-            day: 'numeric', 
-            month: 'short', 
-            year: 'numeric' 
-          })}
-        </p>
+
+        {/* Short Content Excerpt */}
+        {item.konten && (
+          <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 font-medium opacity-80">
+            {item.konten.replace(/<[^>]*>?/gm, '').substring(0, 120)}...
+          </p>
+        )}
       </div>
     </Link>
   );
 }
+
+

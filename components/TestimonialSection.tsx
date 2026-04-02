@@ -44,7 +44,7 @@ const variantStyles = {
   light: {
     card: "bg-white text-[#1e293b] border border-blue-100",
     quote: "text-blue-600/10",
-    star: "text-blue-500",
+    star: "text-yellow-400",
     text: "text-slate-600",
     avatar: "bg-blue-600 text-white",
     name: "text-slate-900",
@@ -54,7 +54,7 @@ const variantStyles = {
   muted: {
     card: "bg-[#eff6ff] text-[#1e293b]", // Very light blue tint
     quote: "text-blue-600/10",
-    star: "text-blue-500",
+    star: "text-yellow-400",
     text: "text-slate-600",
     avatar: "bg-blue-100 text-blue-700",
     name: "text-slate-900",
