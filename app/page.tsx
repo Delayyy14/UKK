@@ -70,7 +70,7 @@ export default async function LandingPage() {
       {/* About / Introduction Section (Replacing Features) */}
       <section id="about" className="relative py-32 px-6 md:px-12 lg:px-24 bg-white overflow-hidden">
         {/* Background Text Effect (Fore Coffee Style) */}
-        <div className="absolute top-5 left-0 w-full whitespace-nowrap opacity-[0.05] select-none pointer-events-none">
+        <div className="absolute top-5 left-0 w-full whitespace-nowrap opacity-[0.25] select-none pointer-events-none">
           <h2 className="text-[120px] md:text-[200px] font-black tracking-tighter text-transparent" style={{ WebkitTextStroke: '3px #2563eb' }}>
             PinjamLe PinjamLe PinjamLe PinjamLe
           </h2>
