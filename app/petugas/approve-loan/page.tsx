@@ -30,6 +30,7 @@ export default function ApproveLoanPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
+  const [ktpChecked, setKtpChecked] = useState<Record<number, boolean>>({});
 
   const toggleExpand = (id: number) => {
     setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
@@ -54,7 +55,12 @@ export default function ApproveLoanPage() {
     }
   };
 
-  const handleApprove = async (id: number, approve: boolean) => {
+  const handleApprove = async (id: number, approve: boolean, userId: number) => {
+    if (approve && !ktpChecked[userId]) {
+      toast({ title: 'Perhatian', description: 'Centang kotak KTP untuk mengkonfirmasi bahwa peminjam telah menyerahkan KTP asli.', variant: 'destructive' });
+      return;
+    }
+
     try {
       const userStr = localStorage.getItem('user');
       if (!userStr) return;
@@ -80,7 +86,12 @@ export default function ApproveLoanPage() {
     }
   };
 
-  const handleApproveAll = async (items: Peminjaman[]) => {
+  const handleApproveAll = async (items: Peminjaman[], userId: number) => {
+    if (!ktpChecked[userId]) {
+      toast({ title: 'Perhatian', description: 'Centang kotak KTP untuk mengkonfirmasi bahwa peminjam telah menyerahkan KTP asli.', variant: 'destructive' });
+      return;
+    }
+
     try {
       const userStr = localStorage.getItem('user');
       if (!userStr) return;
@@ -189,14 +200,26 @@ export default function ApproveLoanPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex flex-col items-end gap-2 shrink-0">
                       <button 
-                        onClick={() => handleApproveAll(group.items)}
+                        onClick={() => handleApproveAll(group.items, group.user_id)}
                         className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold rounded-md shadow-sm transition-all active:scale-95 flex items-center gap-1.5"
                       >
                         <CheckCircle size={14} />
                         SETUJUI SEMUA
                       </button>
+                      <div className="flex items-center gap-1.5 bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
+                        <input 
+                          type="checkbox" 
+                          id={`ktp-${group.user_id}`}
+                          checked={!!ktpChecked[group.user_id]}
+                          onChange={(e) => setKtpChecked(prev => ({...prev, [group.user_id]: e.target.checked}))}
+                          className="w-3 h-3 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
+                        />
+                        <label htmlFor={`ktp-${group.user_id}`} className="text-[9px] font-bold text-blue-700 uppercase tracking-wider cursor-pointer">
+                          [V] KTP Asli Diserahkan
+                        </label>
+                      </div>
                   </div>
                </div>
             </div>
@@ -287,7 +310,7 @@ export default function ApproveLoanPage() {
 
                       <div className="flex gap-2 mt-auto pt-2">
                         <button
-                          onClick={() => handleApprove(item.id, true)}
+                          onClick={() => handleApprove(item.id, true, group.user_id)}
                           disabled={item.jumlah_tersedia !== undefined && item.jumlah_tersedia < item.jumlah}
                           className={`flex items-center justify-center gap-1.5 flex-1 py-1.5 px-3 rounded-lg font-bold text-[11px] transition-all duration-300 shadow-sm ${
                             item.jumlah_tersedia !== undefined && item.jumlah_tersedia < item.jumlah
@@ -299,7 +322,7 @@ export default function ApproveLoanPage() {
                           SETUJUI
                         </button>
                         <button
-                          onClick={() => handleApprove(item.id, false)}
+                          onClick={() => handleApprove(item.id, false, group.user_id)}
                           className="flex items-center justify-center px-3 py-1.5 rounded-lg font-bold text-[11px] bg-white text-rose-500 border border-rose-100 hover:bg-rose-50 transition-all active:scale-95"
                         >
                           TOLAK

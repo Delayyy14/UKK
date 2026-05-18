@@ -1,8 +1,13 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Instagram } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const images = [
   "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=2070&auto=format&fit=crop",
@@ -16,12 +21,48 @@ const images = [
 ];
 
 export default function InstagramGallery() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(headerRef.current, {
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: "top 80%",
+        },
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        ease: "power2.out"
+      });
+
+      gsap.from(".gallery-item", {
+        scrollTrigger: {
+          trigger: ".gallery-grid",
+          start: "top 70%",
+        },
+        scale: 0.5,
+        opacity: 0,
+        duration: 0.8,
+        stagger: {
+          each: 0.1,
+          from: "random",
+          grid: [2, 4]
+        },
+        ease: "back.out(1.7)"
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="relative py-40 bg-white overflow-hidden">
+    <section ref={sectionRef} className="relative py-40 bg-white overflow-hidden">
       {/* Curved Top Divider */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] h-[300px] bg-white rounded-[50%] -translate-y-[80%] z-20 shadow-[0_-50px_100px_-20px_rgba(0,0,0,0.03)]" />
 
-      <div className="max-w-7xl mx-auto px-6 text-center mb-16 relative z-30">
+      <div ref={headerRef} className="max-w-7xl mx-auto px-6 text-center mb-16 relative z-30">
         <p className="text-blue-600 font-bold text-sm uppercase tracking-[0.2em] mb-4">Follow kami!</p>
         <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter mb-8 lowercase">@pinjamle.outdoor</h2>
         
@@ -31,9 +72,9 @@ export default function InstagramGallery() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 px-2">
+      <div className="gallery-grid grid grid-cols-2 md:grid-cols-4 gap-2 px-2">
         {images.map((src, i) => (
-          <div key={i} className="aspect-square relative overflow-hidden group cursor-pointer">
+          <div key={i} className="gallery-item aspect-square relative overflow-hidden group cursor-pointer">
             <Image 
               src={src} 
               alt={`Gallery image ${i}`} 

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { useBanners, Banner } from "@/hooks/useBanners";
 import { cn } from "@/lib/utils";
+import gsap from "gsap";
 
 const FALLBACK_BANNERS: Banner[] = [
   {
@@ -20,48 +21,74 @@ const FALLBACK_BANNERS: Banner[] = [
   },
 ];
 
-const SLIDE_INTERVAL = 3000;
+const SLIDE_INTERVAL = 5000; // Increased interval for better visibility of animations
 
 export default function HeroSection() {
   const { banners, loading } = useBanners();
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [transitioning, setTransitioning] = useState(false);
+  
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const paraRef = useRef<HTMLParagraphElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const displayBanners = !loading && banners.length > 0 ? banners : FALLBACK_BANNERS;
   const total = displayBanners.length;
+
+  const animateIn = useCallback(() => {
+    const tl = gsap.timeline();
+    tl.fromTo(titleRef.current, 
+      { y: 50, opacity: 0 }, 
+      { y: 0, opacity: 1, duration: 1, ease: "power4.out" }
+    );
+    tl.fromTo(paraRef.current, 
+      { y: 30, opacity: 0 }, 
+      { y: 0, opacity: 1, duration: 1, ease: "power3.out" },
+      "-=0.7"
+    );
+  }, []);
 
   const goTo = useCallback(
     (index: number) => {
       if (transitioning) return;
       setTransitioning(true);
-      setPrevIndex(current);
-      setCurrent((index + total) % total);
-      setTimeout(() => {
-        setPrevIndex(null);
-        setTransitioning(false);
-      }, 700);
+      
+      // Animate out current text
+      gsap.to([titleRef.current, paraRef.current], {
+        y: -30,
+        opacity: 0,
+        duration: 0.5,
+        onComplete: () => {
+          setCurrent((index + total) % total);
+          setTransitioning(false);
+        }
+      });
     },
-    [current, total, transitioning]
+    [total, transitioning]
   );
 
   const prev = useCallback(() => goTo(current - 1), [current, goTo]);
   const next = useCallback(() => goTo(current + 1), [current, goTo]);
 
   useEffect(() => {
+    animateIn();
+  }, [current, animateIn]);
+
+  useEffect(() => {
     if (isPaused || total <= 1) return;
     const timer = setInterval(() => {
-      goTo(current + 1);
+      next();
     }, SLIDE_INTERVAL);
     return () => clearInterval(timer);
-  }, [isPaused, current, total, goTo]);
+  }, [isPaused, total, next]);
 
   const banner = displayBanners[current];
 
   return (
     <section
-      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center"
+      ref={containerRef}
+      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center bg-black"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -70,7 +97,7 @@ export default function HeroSection() {
         <div
           key={b.id}
           className={cn(
-            "absolute inset-0 transition-opacity duration-700 ease-in-out",
+            "absolute inset-0 transition-opacity duration-1000 ease-in-out",
             i === current ? "opacity-100 z-10" : "opacity-0 z-0"
           )}
         >
@@ -79,26 +106,29 @@ export default function HeroSection() {
             alt={b.title}
             fill
             priority={i === 0}
-            className="object-cover"
+            className={cn(
+              "object-cover transition-transform duration-[5000ms] ease-linear",
+              i === current ? "scale-110" : "scale-100"
+            )}
             sizes="100vw"
           />
         </div>
       ))}
 
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/50 z-20" />
+      <div className="absolute inset-0 bg-black/40 z-20" />
 
       {/* Center Content */}
-      <div className="relative z-30 flex flex-col items-center justify-center text-center px-6 md:px-16 max-w-4xl mx-auto">
+      <div className="relative z-30 flex flex-col items-center justify-center text-center px-6 md:px-16 max-w-5xl mx-auto">
         <h1
-          key={`title-${current}`}
-          className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight uppercase animate-in fade-in duration-700"
+          ref={titleRef}
+          className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-none tracking-tighter uppercase drop-shadow-2xl"
         >
           {banner.title}
         </h1>
         <p
-          key={`para-${current}`}
-          className="mt-6 text-base md:text-lg text-white/80 max-w-2xl leading-relaxed animate-in fade-in duration-700 delay-150"
+          ref={paraRef}
+          className="mt-8 text-lg md:text-xl text-white/90 max-w-2xl leading-relaxed font-medium drop-shadow-lg"
         >
           {banner.paragraph}
         </p>
@@ -108,10 +138,10 @@ export default function HeroSection() {
       {total > 1 && (
         <button
           onClick={prev}
-          className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full border-2 border-white/70 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+          className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all duration-300 group"
           aria-label="Previous"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
         </button>
       )}
 
@@ -119,36 +149,32 @@ export default function HeroSection() {
       {total > 1 && (
         <button
           onClick={next}
-          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full border-2 border-white/70 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+          className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all duration-300 group"
           aria-label="Next"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
         </button>
       )}
 
-      {/* Bottom: Dots + Chevron Down */}
-      <div className="absolute bottom-8 left-0 right-0 z-30 flex flex-col items-center gap-4">
-        {/* Dots */}
+      {/* Bottom Decoration */}
+      <div className="absolute bottom-12 left-0 right-0 z-30 flex flex-col items-center gap-6">
         {total > 1 && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {displayBanners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
                 className={cn(
-                  "rounded-full transition-all duration-300",
+                  "h-1.5 transition-all duration-500 rounded-full",
                   i === current
-                    ? "w-6 h-2 bg-white"
-                    : "w-2 h-2 bg-white/40 hover:bg-white/70"
+                    ? "w-12 bg-white"
+                    : "w-3 bg-white/30 hover:bg-white/60"
                 )}
               />
             ))}
           </div>
         )}
-
-        {/* Chevron Down - no animation */}
-        <ChevronDown className="w-7 h-7 text-white/80" />
       </div>
     </section>
   );

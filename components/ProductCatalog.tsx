@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,7 +52,10 @@ interface ProductCatalogProps {
 }
 
 export default function ProductCatalog({ products, categories }: ProductCatalogProps) {
-  const [search, setSearch] = useState('');
+  const searchParams = useSearchParams();
+  const queryParam = searchParams.get('q');
+  
+  const [search, setSearch] = useState(queryParam || '');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);

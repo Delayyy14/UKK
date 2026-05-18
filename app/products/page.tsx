@@ -3,6 +3,7 @@ import pool from '@/lib/db';
 import ProductCatalog from '@/components/ProductCatalog';
 import Footer from '@/components/Footer';
 import PageHeader from '@/components/PageHeader';
+import AIChatBot from '@/components/AIChatBot';
 
 async function getProducts() {
   try {
@@ -57,6 +58,7 @@ export default async function ProductsPage() {
       
        {/* Footer */}
       <Footer />
+      <AIChatBot />
     </div>
   );
 }
